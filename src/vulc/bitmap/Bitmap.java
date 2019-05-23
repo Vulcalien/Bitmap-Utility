@@ -151,6 +151,32 @@ public class Bitmap {
 		return getScaled(scale, scale);
 	}
 
+	public Bitmap getScaledByDimension(int width, int height) {
+		Bitmap result = new Bitmap(width, height);
+
+		double xScale = (double) width / this.width;
+		double yScale = (double) height / this.height;
+
+		for(int y1 = 0; y1 < height; y1++) {
+			int y0 = (int) (y1 / yScale);
+			for(int x1 = 0; x1 < width; x1++) {
+				int x0 = (int) (x1 / xScale);
+
+				int col = getPixel(x0, y0);
+				result.setPixel(x1, y1, col);
+			}
+		}
+		return result;
+	}
+
+	public Bitmap getScaled(double xScale, double yScale) {
+		return getScaledByDimension((int) (width * xScale), (int) (height * yScale));
+	}
+
+	public Bitmap getScaled(double scale) {
+		return getScaled(scale, scale);
+	}
+
 	public Bitmap getSubimage(int x, int y, int width, int height) {
 		Bitmap result = new Bitmap(width, height);
 
@@ -223,6 +249,48 @@ public class Bitmap {
 
 				int color = getPixel(x, y);
 				result.setPixel(x1, y1, color);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a rotated image.
+	 * @param theta the rotation angle
+	 * @param background the background color
+	 * @return the rotated image
+	 */
+	public Bitmap getRotated(double theta, int background) {
+		theta %= Math.PI * 2;
+		if(theta < 0) theta = Math.PI * 2 + theta;
+
+		double cos0 = Math.cos(-theta);
+		double sin0 = Math.sin(-theta);
+
+		int w = (int) (Math.abs(cos0 * width) + Math.abs(sin0 * height) + 0.5);
+		int h = (int) (Math.abs(cos0 * height) + Math.abs(sin0 * width) + 0.5);
+		Bitmap result = new Bitmap(w, h, background);
+
+		double c0x = width / 2.0;
+		double c0y = height / 2.0;
+		double c1x = w / 2.0;
+		double c1y = h / 2.0;
+
+		for(int y = 0; y < result.height; y++) {
+			double yd = y - c1y;
+			for(int x = 0; x < result.width; x++) {
+				double xd = x - c1x;
+
+				int x0 = (int) (xd * cos0 - yd * sin0 + 0.5 + c0x);
+				int y0 = (int) (xd * sin0 + yd * cos0 + 0.5 + c0y);
+
+				//offset correction
+				if(theta >= Math.PI / 2 && theta <= Math.PI) y0--;
+				if(theta >= Math.PI && theta <= Math.PI / 2 * 3) x0--;
+
+				if(!(x0 < 0 || x0 >= width || y0 < 0 || y0 >= height)) {
+					result.setPixel(x, y, getPixel(x0, y0));
+				}
 			}
 		}
 		return result;
