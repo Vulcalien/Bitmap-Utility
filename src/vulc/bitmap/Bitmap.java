@@ -106,7 +106,7 @@ public abstract class Bitmap<T> {
 
 				T color = image.getPixel(xi, yi);
 				for(int i = 0; i < transparentColors.length; i++) {
-					if(color == transparentColors[i]) continue x_for;
+					if(color.equals(transparentColors[i])) continue x_for;
 				}
 				setPixel(xPix, yPix, color);
 			}
