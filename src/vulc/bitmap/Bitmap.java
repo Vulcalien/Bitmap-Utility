@@ -17,6 +17,7 @@ package vulc.bitmap;
 
 import java.lang.reflect.Array;
 
+@SuppressWarnings("unchecked")
 public abstract class Bitmap<T> {
 
 	protected final Class<T> type;
@@ -25,13 +26,15 @@ public abstract class Bitmap<T> {
 	public final int height;
 	public final T[] pixels;
 
-	@SuppressWarnings("unchecked")
+	protected T[] transparentColors;
+
 	public Bitmap(Class<T> type, int width, int height) {
 		this.type = type;
 
 		this.width = width;
 		this.height = height;
 		this.pixels = (T[]) Array.newInstance(type, width * height);
+		this.transparentColors = (T[]) Array.newInstance(type, 0);
 	}
 
 	public Bitmap(Class<T> type, int width, int height, T color) {
@@ -39,7 +42,6 @@ public abstract class Bitmap<T> {
 		clear(color);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Bitmap<T> getSameTypeInstance(int width, int height) {
 		if(this instanceof IntBitmap)
 		    return (Bitmap<T>) new IntBitmap(width, height);
@@ -51,7 +53,6 @@ public abstract class Bitmap<T> {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Bitmap<T> getSameTypeInstance(int width, int height, T color) {
 		if(this instanceof IntBitmap)
 		    return (Bitmap<T>) new IntBitmap(width, height, (int) color);
@@ -61,6 +62,10 @@ public abstract class Bitmap<T> {
 		    return (Bitmap<T>) new BoolBitmap(width, height, (boolean) color);
 
 		return null;
+	}
+
+	public void setTransparent(T... colors) {
+		this.transparentColors = colors;
 	}
 
 	public void setPixel(int x, int y, T color) {
@@ -85,6 +90,44 @@ public abstract class Bitmap<T> {
 				if(x < 0 || x >= width) continue;
 
 				setPixel(x, y, color);
+			}
+		}
+	}
+
+	public void draw(Bitmap<T> image, int x, int y) {
+		for(int yi = 0; yi < image.height; yi++) {
+			int yPix = yi + y;
+			if(yPix < 0 || yPix >= height) continue;
+
+			x_for:
+			for(int xi = 0; xi < image.width; xi++) {
+				int xPix = xi + x;
+				if(xPix < 0 || xPix >= width) continue;
+
+				T color = image.getPixel(xi, yi);
+				for(int i = 0; i < transparentColors.length; i++) {
+					if(color == transparentColors[i]) continue x_for;
+				}
+				setPixel(xPix, yPix, color);
+			}
+		}
+	}
+
+	public void drawByte(Bitmap<Byte> image, T color, int x, int y) {
+		throw new UnsupportedOperationException();
+	}
+
+	public void drawBool(Bitmap<Boolean> image, T color, int x, int y) {
+		for(int yi = 0; yi < image.height; yi++) {
+			int yPix = yi + y;
+			if(yPix < 0 || yPix >= height) continue;
+
+			for(int xi = 0; xi < image.width; xi++) {
+				int xPix = xi + x;
+				if(xPix < 0 || xPix >= width) continue;
+
+				boolean val = image.getPixel(xi, yi);
+				if(val == true) setPixel(xPix, yPix, color);
 			}
 		}
 	}

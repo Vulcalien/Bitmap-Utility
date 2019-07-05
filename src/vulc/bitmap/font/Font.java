@@ -23,7 +23,6 @@ import java.io.InputStream;
 
 import vulc.bitmap.Bitmap;
 import vulc.bitmap.BoolBitmap;
-import vulc.bitmap.IntBitmap;
 
 /**
  * Font class creates a font charset by a LinkFont file.
@@ -76,15 +75,16 @@ public class Font {
 					monospaced = width == imgs[0].width;
 				}
 
-				BoolBitmap img = new BoolBitmap(width, height);
+				Bitmap<Boolean> img = new BoolBitmap(width, height);
 				imgs[i] = img;
 
 				byte[] pixels = new byte[width * height];
 				in.read(pixels);
 				for(int p = 0; p < pixels.length; p++) {
 					int color = pixels[p] & 0xff;
-					if(color == 0xff) imgs[i].pixels[p] = true;
-					else imgs[i].pixels[p] = false;
+
+					if(color == 0xff) img.pixels[p] = true;
+					else img.pixels[p] = false;
 				}
 			}
 			in.close();
@@ -111,19 +111,19 @@ public class Font {
 		return getScaled(scale, scale);
 	}
 
-	public void write(String text, int color, IntBitmap bitmap, int x, int y) {
+	public void write(String text, int color, Bitmap<Integer> bitmap, int x, int y) {
 		int offset = x;
 		for(int i = 0; i < text.length(); i++) {
 			int code = text.charAt(i) - 32;
 
 			Bitmap<Boolean> img = imgs[code];
-			bitmap.draw(img, color, offset, y);
+			bitmap.drawBool(img, color, offset, y);
 
 			offset += img.width + letterSpacing;
 		}
 	}
 
-	public void write(String text, IntBitmap bitmap, int x, int y) {
+	public void write(String text, Bitmap<Integer> bitmap, int x, int y) {
 		this.write(text, 0x000000, bitmap, x, y);
 	}
 

@@ -19,8 +19,6 @@ import java.awt.image.BufferedImage;
 
 public class IntBitmap extends Bitmap<Integer> {
 
-	protected int[] transparentColors = new int[0];
-
 	public IntBitmap(int width, int height) {
 		super(Integer.class, width, height);
 	}
@@ -44,44 +42,6 @@ public class IntBitmap extends Bitmap<Integer> {
 			int b = color & 0xff;
 
 			pixels[i] = r << 16 | g << 8 | b;
-		}
-	}
-
-	public void setTransparent(int... colors) {
-		this.transparentColors = colors;
-	}
-
-	public void draw(Bitmap<Integer> bitmap, int x, int y) {
-		for(int yi = 0; yi < bitmap.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			x_for:
-			for(int xi = 0; xi < bitmap.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				int color = bitmap.getPixel(xi, yi);
-				for(int i = 0; i < transparentColors.length; i++) {
-					if(color == transparentColors[i]) continue x_for;
-				}
-				setPixel(xPix, yPix, color);
-			}
-		}
-	}
-
-	public void draw(Bitmap<Boolean> bitmap, int color, int x, int y) {
-		for(int yi = 0; yi < bitmap.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			for(int xi = 0; xi < bitmap.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				boolean val = bitmap.getPixel(xi, yi);
-				if(val == true) setPixel(xPix, yPix, color);
-			}
 		}
 	}
 
