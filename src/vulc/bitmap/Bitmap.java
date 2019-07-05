@@ -15,107 +15,69 @@
  ******************************************************************************/
 package vulc.bitmap;
 
-import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
 
-/**
- * Bitmap is a RGB image that contains the pixels as an int array.
- * @author Vulcalien
- */
-public class Bitmap {
+public abstract class Bitmap<T> {
+
+	protected final Class<T> type;
 
 	public final int width;
 	public final int height;
-	public final int[] pixels;
+	public final T[] pixels;
 
-	protected int[] transparentColors = new int[0];
+	@SuppressWarnings("unchecked")
+	public Bitmap(Class<T> type, int width, int height) {
+		this.type = type;
 
-	public Bitmap(int width, int height) {
 		this.width = width;
 		this.height = height;
-		pixels = new int[width * height];
+		this.pixels = (T[]) Array.newInstance(type, width * height);
 	}
 
-	public Bitmap(int width, int height, int color) {
-		this(width, height);
+	public Bitmap(Class<T> type, int width, int height, T color) {
+		this(type, width, height);
 		clear(color);
 	}
 
-	/**
-	 * Creates a Bitmap from a BufferedImage.
-	 * @param img the BufferedImage
-	 */
-	public Bitmap(BufferedImage img) {
-		this(img.getWidth(), img.getHeight());
-		img.getRGB(0, 0, width, height, pixels, 0, width);
+	@SuppressWarnings("unchecked")
+	protected Bitmap<T> getSameTypeInstance(int width, int height) {
+		if(this instanceof IntBitmap)
+		    return (Bitmap<T>) new IntBitmap(width, height);
+		else if(this instanceof ByteBitmap)
+		    return (Bitmap<T>) new ByteBitmap(width, height);
+		else if(this instanceof BoolBitmap)
+		    return (Bitmap<T>) new BoolBitmap(width, height);
 
-		for(int i = 0; i < pixels.length; i++) {
-			int color = pixels[i];
-
-			int r = (color >> 16) & 0xff;
-			int g = (color >> 8) & 0xff;
-			int b = color & 0xff;
-
-			pixels[i] = r << 16 | g << 8 | b;
-		}
+		return null;
 	}
 
-	/**
-	 * Sets the colors that should not be drawed.
-	 * @param colors the colors to avoid
-	 */
-	public void setTransparent(int... colors) {
-		this.transparentColors = colors;
+	@SuppressWarnings("unchecked")
+	protected Bitmap<T> getSameTypeInstance(int width, int height, T color) {
+		if(this instanceof IntBitmap)
+		    return (Bitmap<T>) new IntBitmap(width, height, (int) color);
+		else if(this instanceof ByteBitmap)
+		    return (Bitmap<T>) new ByteBitmap(width, height, (byte) color);
+		else if(this instanceof BoolBitmap)
+		    return (Bitmap<T>) new BoolBitmap(width, height, (boolean) color);
+
+		return null;
 	}
 
-	public void setPixel(int x, int y, int color) {
+	public void setPixel(int x, int y, T color) {
 		pixels[x + y * width] = color;
 	}
 
-	public int getPixel(int x, int y) {
+	public T getPixel(int x, int y) {
 		return pixels[x + y * width];
 	}
 
-	public void clear(int color) {
+	public void clear(T color) {
 		for(int i = 0; i < pixels.length; i++) {
 			pixels[i] = color;
 		}
 	}
 
-	public void draw(Bitmap bitmap, int x, int y) {
-		for(int yi = 0; yi < bitmap.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			x_for:
-			for(int xi = 0; xi < bitmap.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				int color = bitmap.getPixel(xi, yi);
-				for(int i = 0; i < transparentColors.length; i++) {
-					if(color == transparentColors[i]) continue x_for;
-				}
-				setPixel(xPix, yPix, color);
-			}
-		}
-	}
-
-	public void draw(BoolBitmap bitmap, int color, int x, int y) {
-		for(int yi = 0; yi < bitmap.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			for(int xi = 0; xi < bitmap.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				boolean val = bitmap.getPixel(xi, yi);
-				if(val == true) setPixel(xPix, yPix, color);
-			}
-		}
-	}
-
-	public void fill(int x0, int y0, int x1, int y1, int color) {
+	public void fill(int x0, int y0, int x1, int y1, T color) {
 		for(int y = y0; y <= y1; y++) {
 			if(y < 0 || y >= height) continue;
 
@@ -127,12 +89,12 @@ public class Bitmap {
 		}
 	}
 
-	public Bitmap getScaled(int xScale, int yScale) {
-		Bitmap result = new Bitmap(width * xScale, height * yScale);
+	public Bitmap<T> getScaled(int xScale, int yScale) {
+		Bitmap<T> result = getSameTypeInstance(width * xScale, height * yScale);
 
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				int color = getPixel(x, y);
+				T color = getPixel(x, y);
 
 				int xPix = x * xScale;
 				int yPix = y * yScale;
@@ -147,12 +109,12 @@ public class Bitmap {
 		return result;
 	}
 
-	public Bitmap getScaled(int scale) {
+	public Bitmap<T> getScaled(int scale) {
 		return getScaled(scale, scale);
 	}
 
-	public Bitmap getScaledByDimension(int width, int height) {
-		Bitmap result = new Bitmap(width, height);
+	public Bitmap<T> dGetScaledByDimension(int width, int height) {
+		Bitmap<T> result = getSameTypeInstance(width, height);
 
 		double xScale = (double) width / this.width;
 		double yScale = (double) height / this.height;
@@ -162,23 +124,23 @@ public class Bitmap {
 			for(int x1 = 0; x1 < width; x1++) {
 				int x0 = (int) (x1 / xScale);
 
-				int col = getPixel(x0, y0);
-				result.setPixel(x1, y1, col);
+				T color = getPixel(x0, y0);
+				result.setPixel(x1, y1, color);
 			}
 		}
 		return result;
 	}
 
-	public Bitmap getScaled(double xScale, double yScale) {
-		return getScaledByDimension((int) (width * xScale), (int) (height * yScale));
+	public Bitmap<T> dGetScaled(double xScale, double yScale) {
+		return dGetScaledByDimension((int) (width * xScale), (int) (height * yScale));
 	}
 
-	public Bitmap getScaled(double scale) {
-		return getScaled(scale, scale);
+	public Bitmap<T> dGetScaled(double scale) {
+		return dGetScaled(scale, scale);
 	}
 
-	public Bitmap getSubimage(int x, int y, int width, int height) {
-		Bitmap result = new Bitmap(width, height);
+	public Bitmap<T> getSubimage(int x, int y, int width, int height) {
+		Bitmap<T> result = getSameTypeInstance(width, height);
 
 		for(int yi = 0; yi < height; yi++) {
 			int yPix = yi + y;
@@ -186,15 +148,15 @@ public class Bitmap {
 			for(int xi = 0; xi < width; xi++) {
 				int xPix = xi + x;
 
-				int color = getPixel(xPix, yPix);
+				T color = getPixel(xPix, yPix);
 				result.setPixel(xi, yi, color);
 			}
 		}
 		return result;
 	}
 
-	public Bitmap getFlipped(boolean horizontal, boolean vertical) {
-		Bitmap result = new Bitmap(width, height);
+	public Bitmap<T> getFlipped(boolean horizontal, boolean vertical) {
+		Bitmap<T> result = getSameTypeInstance(width, height);
 
 		for(int y = 0; y < height; y++) {
 			int yPix;
@@ -206,27 +168,22 @@ public class Bitmap {
 				if(horizontal) xPix = width - x - 1;
 				else xPix = x;
 
-				int color = getPixel(x, y);
+				T color = getPixel(x, y);
 				result.setPixel(xPix, yPix, color);
 			}
 		}
 		return result;
 	}
 
-	/**
-	 * Returns a rotated image.
-	 * @param rot the number of 90 degrees rotations to right
-	 * @return the rotated image
-	 */
-	public Bitmap getRotated(int rot) {
+	public Bitmap<T> getRotated(int rot) {
 		rot %= 4;
 		if(rot < 0) rot = 4 + rot;
 
-		Bitmap result;
+		Bitmap<T> result;
 		if(rot % 2 == 0) {
-			result = new Bitmap(width, height);
+			result = getSameTypeInstance(width, height);
 		} else {
-			result = new Bitmap(height, width);
+			result = getSameTypeInstance(height, width);
 		}
 
 		for(int y = 0; y < height; y++) {
@@ -247,20 +204,14 @@ public class Bitmap {
 					y1 = width - x - 1;
 				}
 
-				int color = getPixel(x, y);
+				T color = getPixel(x, y);
 				result.setPixel(x1, y1, color);
 			}
 		}
 		return result;
 	}
 
-	/**
-	 * Returns a rotated image.
-	 * @param theta the rotation angle
-	 * @param background the background color
-	 * @return the rotated image
-	 */
-	public Bitmap getRotated(double theta, int background) {
+	public Bitmap<T> dGetRotated(double theta, T background) {
 		theta %= Math.PI * 2;
 		if(theta < 0) theta = Math.PI * 2 + theta;
 
@@ -269,7 +220,7 @@ public class Bitmap {
 
 		int w = (int) (Math.abs(cos0 * width) + Math.abs(sin0 * height) + 0.5);
 		int h = (int) (Math.abs(cos0 * height) + Math.abs(sin0 * width) + 0.5);
-		Bitmap result = new Bitmap(w, h, background);
+		Bitmap<T> result = getSameTypeInstance(w, h, background);
 
 		double c0x = width / 2.0;
 		double c0y = height / 2.0;
@@ -284,7 +235,7 @@ public class Bitmap {
 				int x0 = (int) (xd * cos0 - yd * sin0 + 0.5 + c0x);
 				int y0 = (int) (xd * sin0 + yd * cos0 + 0.5 + c0y);
 
-				//offset correction
+				// offset correction
 				if(theta >= Math.PI / 2 && theta <= Math.PI) y0--;
 				if(theta >= Math.PI && theta <= Math.PI / 2 * 3) x0--;
 

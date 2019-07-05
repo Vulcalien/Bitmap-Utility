@@ -13,13 +13,17 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package vulc.bitmap;
+package vulc.bitmap.font;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import vulc.bitmap.Bitmap;
+import vulc.bitmap.BoolBitmap;
+import vulc.bitmap.IntBitmap;
 
 /**
  * Font class creates a font charset by a LinkFont file.
@@ -31,7 +35,7 @@ public class Font {
 	protected int height;
 	protected boolean monospaced;
 
-	protected BoolBitmap[] imgs;
+	protected Bitmap<Boolean>[] imgs;
 	protected int letterSpacing;
 
 	public Font(InputStream in) {
@@ -59,7 +63,8 @@ public class Font {
 			in.read(info);
 
 			this.chars = (info[0] & 0xff) << 24 | (info[1] & 0xff) << 16 | (info[2] & 0xff) << 8 | info[3] & 0xff;
-			this.letterSpacing = (info[4] & 0xff) << 24 | (info[5] & 0xff) << 16 | (info[6] & 0xff) << 8 | info[7] & 0xff;
+			this.letterSpacing =
+			        (info[4] & 0xff) << 24 | (info[5] & 0xff) << 16 | (info[6] & 0xff) << 8 | info[7] & 0xff;
 			this.height = info[8] & 0xff;
 
 			this.imgs = new BoolBitmap[chars];
@@ -96,7 +101,7 @@ public class Font {
 
 		font.imgs = new BoolBitmap[chars];
 		for(int i = 0; i < chars; i++) {
-			BoolBitmap img = imgs[i];
+			Bitmap<Boolean> img = imgs[i];
 			font.imgs[i] = img.getScaled(xScale, yScale);
 		}
 		return font;
@@ -106,19 +111,19 @@ public class Font {
 		return getScaled(scale, scale);
 	}
 
-	public void write(String text, int color, Bitmap bitmap, int x, int y) {
+	public void write(String text, int color, IntBitmap bitmap, int x, int y) {
 		int offset = x;
 		for(int i = 0; i < text.length(); i++) {
 			int code = text.charAt(i) - 32;
 
-			BoolBitmap img = imgs[code];
+			Bitmap<Boolean> img = imgs[code];
 			bitmap.draw(img, color, offset, y);
 
 			offset += img.width + letterSpacing;
 		}
 	}
 
-	public void write(String text, Bitmap bitmap, int x, int y) {
+	public void write(String text, IntBitmap bitmap, int x, int y) {
 		this.write(text, 0x000000, bitmap, x, y);
 	}
 

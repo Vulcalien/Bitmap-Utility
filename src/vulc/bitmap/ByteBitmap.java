@@ -15,13 +15,13 @@
  ******************************************************************************/
 package vulc.bitmap;
 
-public class BoolBitmap extends Bitmap<Boolean> {
+public class ByteBitmap extends Bitmap<Byte> {
 
-	public BoolBitmap(int width, int height) {
-		super(Boolean.class, width, height);
+	public ByteBitmap(int width, int height) {
+		super(Byte.class, width, height);
 	}
 
-	public BoolBitmap(int width, int height, boolean color) {
+	public ByteBitmap(int width, int height, byte color) {
 		this(width, height);
 		clear(color);
 	}

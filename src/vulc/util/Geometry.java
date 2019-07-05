@@ -23,7 +23,7 @@ import vulc.bitmap.Bitmap;
  */
 public abstract class Geometry {
 
-	public static void drawLine(Bitmap bitmap, int color, int x0, int y0, int x1, int y1) {
+	public static void drawLine(Bitmap<Integer> bitmap, int color, int x0, int y0, int x1, int y1) {
 		if(x0 == x1 && y0 == y1) return;
 
 		int xd = x1 - x0;
@@ -48,7 +48,7 @@ public abstract class Geometry {
 		}
 	}
 
-	public static void drawCircle(Bitmap bitmap, int color, int x0, int y0, int radius) {
+	public static void drawCircle(Bitmap<Integer> bitmap, int color, int x0, int y0, int radius) {
 		int d = 2 * radius;
 		for(int y = 0; y <= d; y++) {
 			int yPix = y0 + y;
