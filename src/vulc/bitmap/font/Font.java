@@ -127,7 +127,7 @@ public class Font {
 		this.write(text, 0x000000, bitmap, x, y);
 	}
 
-	public void writeToByte(String text, byte color, Bitmap<Byte> bitmap, int x, int y) {
+	public void writeOnByte(String text, byte color, Bitmap<Byte> bitmap, int x, int y) {
 		int offset = x;
 		for(int i = 0; i < text.length(); i++) {
 			int code = text.charAt(i) - 32;
@@ -139,7 +139,7 @@ public class Font {
 		}
 	}
 
-	public void writeToBool(String text, boolean color, Bitmap<Boolean> bitmap, int x, int y) {
+	public void writeOnBool(String text, boolean color, Bitmap<Boolean> bitmap, int x, int y) {
 		int offset = x;
 		for(int i = 0; i < text.length(); i++) {
 			int code = text.charAt(i) - 32;
