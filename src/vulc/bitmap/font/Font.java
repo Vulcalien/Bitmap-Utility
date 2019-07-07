@@ -127,6 +127,30 @@ public class Font {
 		this.write(text, 0x000000, bitmap, x, y);
 	}
 
+	public void writeToByte(String text, byte color, Bitmap<Byte> bitmap, int x, int y) {
+		int offset = x;
+		for(int i = 0; i < text.length(); i++) {
+			int code = text.charAt(i) - 32;
+
+			Bitmap<Boolean> img = imgs[code];
+			bitmap.drawBool(img, color, offset, y);
+
+			offset += img.width + letterSpacing;
+		}
+	}
+
+	public void writeToBool(String text, boolean color, Bitmap<Boolean> bitmap, int x, int y) {
+		int offset = x;
+		for(int i = 0; i < text.length(); i++) {
+			int code = text.charAt(i) - 32;
+
+			Bitmap<Boolean> img = imgs[code];
+			bitmap.drawBool(img, color, offset, y);
+
+			offset += img.width + letterSpacing;
+		}
+	}
+
 	public int lengthOf(String text) {
 		if(text.length() == 0) return 0;
 
