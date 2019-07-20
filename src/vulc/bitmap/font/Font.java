@@ -151,7 +151,7 @@ public class Font {
 		}
 	}
 
-	public int lengthOf(String text) {
+	public int widthOf(String text) {
 		if(text.length() == 0) return 0;
 
 		int width = 0;
@@ -162,7 +162,7 @@ public class Font {
 		return width - letterSpacing;
 	}
 
-	public int lengthOf(char character) {
+	public int widthOf(char character) {
 		return imgs[character - 32].width;
 	}
 
