@@ -26,6 +26,7 @@ import vulc.bitmap.BoolBitmap;
 
 /**
  * Font class creates a font charset by a LinkFont file.
+ * <h2>File-version:</h2>&emsp;&emsp;&emsp;1
  * @author Vulcalien
  */
 public class Font {
@@ -61,9 +62,14 @@ public class Font {
 			byte[] info = new byte[9];
 			in.read(info);
 
-			this.chars = (info[0] & 0xff) << 24 | (info[1] & 0xff) << 16 | (info[2] & 0xff) << 8 | info[3] & 0xff;
-			this.letterSpacing =
-			        (info[4] & 0xff) << 24 | (info[5] & 0xff) << 16 | (info[6] & 0xff) << 8 | info[7] & 0xff;
+			this.chars = (info[0] & 0xff) << 24
+			             | (info[1] & 0xff) << 16
+			             | (info[2] & 0xff) << 8
+			             | (info[3] & 0xff);
+			this.letterSpacing = (info[4] & 0xff) << 24
+			                     | (info[5] & 0xff) << 16
+			                     | (info[6] & 0xff) << 8
+			                     | (info[7] & 0xff);
 			this.height = info[8] & 0xff;
 
 			this.imgs = new BoolBitmap[chars];
