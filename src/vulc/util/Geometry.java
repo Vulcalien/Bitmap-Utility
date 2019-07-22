@@ -24,27 +24,19 @@ import vulc.bitmap.Bitmap;
 public abstract class Geometry {
 
 	public static void drawLine(Bitmap<Integer> bitmap, int color, int x0, int y0, int x1, int y1) {
-		if(x0 == x1 && y0 == y1) return;
-
 		int xd = x1 - x0;
 		int yd = y1 - y0;
 		double d = Math.sqrt(xd * xd + yd * yd);
 
 		double angle = Math.atan2(yd, xd);
 
-		double xDraw = 0;
-		double yDraw = 0;
+		for(int i = 0; i <= d; i++) {
+			int xPix = (int) (x0 + i * Math.cos(angle) + 0.5);
+			int yPix = (int) (y0 + i * Math.sin(angle) + 0.5);
 
-		for(int i = 0; i < d; i++) {
-			int xPix = (int) (x0 + xDraw + 0.5);
-			int yPix = (int) (y0 + yDraw + 0.5);
-
-			if(xPix < 0 || xPix >= bitmap.width || yPix < 0 || yPix >= bitmap.height) continue;
-
-			bitmap.setPixel(xPix, yPix, color);
-
-			xDraw += Math.cos(angle);
-			yDraw += Math.sin(angle);
+			if(!(xPix < 0 || xPix >= bitmap.width || yPix < 0 || yPix >= bitmap.height)) {
+				bitmap.setPixel(xPix, yPix, color);
+			}
 		}
 	}
 
