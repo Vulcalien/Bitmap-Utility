@@ -21,7 +21,7 @@ public class ByteBitmap extends Bitmap<Byte> {
 		super(Byte.class, width, height);
 	}
 
-	public ByteBitmap(int width, int height, byte color) {
+	public ByteBitmap(int width, int height, Byte color) {
 		this(width, height);
 		clear(color);
 	}

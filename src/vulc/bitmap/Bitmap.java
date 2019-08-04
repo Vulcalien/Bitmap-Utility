@@ -43,24 +43,20 @@ public abstract class Bitmap<T> {
 	}
 
 	protected Bitmap<T> getSameTypeInstance(int width, int height) {
-		if(this instanceof IntBitmap)
-		    return (Bitmap<T>) new IntBitmap(width, height);
-		else if(this instanceof ByteBitmap)
-		    return (Bitmap<T>) new ByteBitmap(width, height);
-		else if(this instanceof BoolBitmap)
-		    return (Bitmap<T>) new BoolBitmap(width, height);
-
+		try {
+			return getClass().getConstructor(Integer.TYPE, Integer.TYPE).newInstance(width, height);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	protected Bitmap<T> getSameTypeInstance(int width, int height, T color) {
-		if(this instanceof IntBitmap)
-		    return (Bitmap<T>) new IntBitmap(width, height, (int) color);
-		else if(this instanceof ByteBitmap)
-		    return (Bitmap<T>) new ByteBitmap(width, height, (byte) color);
-		else if(this instanceof BoolBitmap)
-		    return (Bitmap<T>) new BoolBitmap(width, height, (boolean) color);
-
+		try {
+			return getClass().getConstructor(Integer.TYPE, Integer.TYPE, type).newInstance(width, height, color);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
