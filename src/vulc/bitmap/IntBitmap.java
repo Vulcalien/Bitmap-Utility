@@ -46,4 +46,29 @@ public class IntBitmap extends Bitmap<Integer> {
 		}
 	}
 
+	public void drawByte(Bitmap<Byte> image, Integer color, int x, int y) {
+		int rCol = (color >> 16) & 0xff;
+		int gCol = (color >> 8) & 0xff;
+		int bCol = (color) & 0xff;
+
+		for(int yi = 0; yi < image.height; yi++) {
+			int yPix = yi + y;
+			if(yPix < 0 || yPix >= height) continue;
+
+			for(int xi = 0; xi < image.width; xi++) {
+				int xPix = xi + x;
+				if(xPix < 0 || xPix >= width) continue;
+
+				int gradient = Byte.toUnsignedInt(image.getPixel(xi, yi));
+
+				int r = rCol * gradient / 0xff;
+				int g = gCol * gradient / 0xff;
+				int b = bCol * gradient / 0xff;
+
+				int drawColor = r << 16 | g << 8 | b;
+				setPixel(xPix, yPix, drawColor);
+			}
+		}
+	}
+
 }
