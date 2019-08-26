@@ -60,6 +60,10 @@ public abstract class Bitmap<T> {
 		return null;
 	}
 
+	public int size() {
+		return pixels.length;
+	}
+
 	public void setTransparent(T... colors) {
 		this.transparentColors = colors;
 	}
@@ -73,7 +77,7 @@ public abstract class Bitmap<T> {
 	}
 
 	public void clear(T color) {
-		for(int i = 0; i < pixels.length; i++) {
+		for(int i = 0; i < size(); i++) {
 			pixels[i] = color;
 		}
 	}
@@ -126,6 +130,14 @@ public abstract class Bitmap<T> {
 				if(val == true) setPixel(xPix, yPix, color);
 			}
 		}
+	}
+
+	public Bitmap<T> getCopy() {
+		Bitmap<T> copy = getSameTypeInstance(width, height);
+		for(int i = 0; i < this.size(); i++) {
+			copy.pixels[i] = this.pixels[i];
+		}
+		return copy;
 	}
 
 	public Bitmap<T> getScaled(int xScale, int yScale) {
@@ -284,6 +296,21 @@ public abstract class Bitmap<T> {
 			}
 		}
 		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if(obj.getClass() == this.getClass()) {
+			Bitmap<T> bitmap = (Bitmap<T>) obj;
+			if(bitmap.width != this.width || bitmap.height != this.height) return false;
+
+			for(int i = 0; i < bitmap.size(); i++) {
+				if(!bitmap.pixels[i].equals(this.pixels[i])) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 }
