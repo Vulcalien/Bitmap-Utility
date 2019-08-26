@@ -19,6 +19,7 @@ public class ByteBitmap extends Bitmap<Byte> {
 
 	public ByteBitmap(int width, int height) {
 		super(Byte.class, width, height);
+		clear((byte) 0);
 	}
 
 	public ByteBitmap(int width, int height, Byte color) {

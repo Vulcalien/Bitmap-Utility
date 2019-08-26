@@ -19,6 +19,7 @@ public class BoolBitmap extends Bitmap<Boolean> {
 
 	public BoolBitmap(int width, int height) {
 		super(Boolean.class, width, height);
+		clear(false);
 	}
 
 	public BoolBitmap(int width, int height, Boolean color) {

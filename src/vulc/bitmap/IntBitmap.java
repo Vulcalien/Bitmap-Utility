@@ -21,6 +21,7 @@ public class IntBitmap extends Bitmap<Integer> {
 
 	public IntBitmap(int width, int height) {
 		super(Integer.class, width, height);
+		clear(0);
 	}
 
 	public IntBitmap(int width, int height, Integer color) {
