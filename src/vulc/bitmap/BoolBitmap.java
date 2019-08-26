@@ -15,6 +15,8 @@
  ******************************************************************************/
 package vulc.bitmap;
 
+import java.awt.image.BufferedImage;
+
 public class BoolBitmap extends Bitmap<Boolean> {
 
 	public BoolBitmap(int width, int height) {
@@ -25,6 +27,35 @@ public class BoolBitmap extends Bitmap<Boolean> {
 	public BoolBitmap(int width, int height, Boolean color) {
 		this(width, height);
 		clear(color);
+	}
+
+	public BoolBitmap(BufferedImage img, int trueColor) {
+		this(img.getWidth(), img.getHeight());
+
+		int[] buffer = new int[width * height];
+		img.getRGB(0, 0, width, height, buffer, 0, width);
+
+		for(int i = 0; i < buffer.length; i++) {
+			int color = buffer[i];
+
+			int r = (color >> 16) & 0xff;
+			int g = (color >> 8) & 0xff;
+			int b = color & 0xff;
+
+			color = r << 16 | g << 8 | b;
+
+			pixels[i] = (color == trueColor);
+		}
+	}
+
+	public BoolBitmap(Bitmap<Integer> bitmap, int trueColor) {
+		this(bitmap.width, bitmap.height);
+
+		for(int i = 0; i < bitmap.size(); i++) {
+			int color = bitmap.pixels[i];
+
+			pixels[i] = (color == trueColor);
+		}
 	}
 
 }
