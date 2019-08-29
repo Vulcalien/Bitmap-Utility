@@ -113,7 +113,15 @@ public abstract class Bitmap<T> {
 		}
 	}
 
+	public void draw(Bitmap<T> image, int x, int y, int transparency) {
+		throw new UnsupportedOperationException();
+	}
+
 	public void drawByte(Bitmap<Byte> image, T color, int x, int y) {
+		throw new UnsupportedOperationException();
+	}
+
+	public void drawByte(Bitmap<Byte> image, T color, int x, int y, int transparency) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -130,6 +138,10 @@ public abstract class Bitmap<T> {
 				if(val == true) setPixel(xPix, yPix, color);
 			}
 		}
+	}
+
+	public void drawBool(Bitmap<Boolean> image, T color, int x, int y, int transparency) {
+		throw new UnsupportedOperationException();
 	}
 
 	public Bitmap<T> getCopy() {
