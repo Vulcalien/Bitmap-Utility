@@ -113,6 +113,10 @@ public abstract class Bitmap<T> {
 		font.write(this, text, color, x, y);
 	}
 
+	public void write(String text, T color, int transparency, int x, int y) {
+		font.write(this, text, color, transparency, x, y);
+	}
+
 	public void draw(Bitmap<T> image, int x, int y) {
 		for(int yi = 0; yi < image.height; yi++) {
 			int yPix = yi + y;

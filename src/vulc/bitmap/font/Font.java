@@ -129,6 +129,20 @@ public class Font {
 		}
 	}
 
+	public <T> void write(Bitmap<T> bitmap, String text, T color, int transparency, int x, int y) {
+		transparency &= 0xff;
+
+		int offset = x;
+		for(int i = 0; i < text.length(); i++) {
+			int code = text.charAt(i) - 32;
+
+			Bitmap<Boolean> img = imgs[code];
+			bitmap.drawBool(img, color, transparency, offset, y);
+
+			offset += img.width + letterSpacing;
+		}
+	}
+
 	public int widthOf(String text) {
 		if(text.length() == 0) return 0;
 
