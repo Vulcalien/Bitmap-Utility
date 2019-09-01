@@ -109,14 +109,6 @@ public abstract class Bitmap<T> {
 		}
 	}
 
-	public void write(String text, T color, int x, int y) {
-		font.write(this, text, color, x, y);
-	}
-
-	public void write(String text, T color, int transparency, int x, int y) {
-		font.write(this, text, color, transparency, x, y);
-	}
-
 	public void draw(Bitmap<T> image, int x, int y) {
 		for(int yi = 0; yi < image.height; yi++) {
 			int yPix = yi + y;
@@ -165,6 +157,14 @@ public abstract class Bitmap<T> {
 
 	public void drawBool(Bitmap<Boolean> image, T color, int transparency, int x, int y) {
 		throw new UnsupportedOperationException();
+	}
+
+	public void write(String text, T color, int x, int y) {
+		font.write(this, text, color, x, y);
+	}
+
+	public void write(String text, T color, int transparency, int x, int y) {
+		font.write(this, text, color, transparency, x, y);
 	}
 
 	public Bitmap<T> getCopy() {
