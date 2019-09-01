@@ -46,7 +46,7 @@ public class IntBitmap extends Bitmap<Integer> {
 		}
 	}
 
-	public void draw(Bitmap<Integer> image, int x, int y, int transparency) {
+	public void draw(Bitmap<Integer> image, int transparency, int x, int y) {
 		transparency &= 0xff;
 
 		for(int yi = 0; yi < image.height; yi++) {
@@ -96,7 +96,7 @@ public class IntBitmap extends Bitmap<Integer> {
 		}
 	}
 
-	public void drawByte(Bitmap<Byte> image, Integer color, int x, int y, int transparency) {
+	public void drawByte(Bitmap<Byte> image, Integer color, int transparency, int x, int y) {
 		transparency &= 0xff;
 
 		int rCol = (color >> 16) & 0xff;
@@ -127,7 +127,7 @@ public class IntBitmap extends Bitmap<Integer> {
 		}
 	}
 
-	public void drawBool(Bitmap<Boolean> image, Integer color, int x, int y, int transparency) {
+	public void drawBool(Bitmap<Boolean> image, Integer color, int transparency, int x, int y) {
 		transparency &= 0xff;
 
 		for(int yi = 0; yi < image.height; yi++) {
