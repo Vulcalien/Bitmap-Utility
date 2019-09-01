@@ -17,6 +17,8 @@ package vulc.bitmap;
 
 import java.lang.reflect.Array;
 
+import vulc.bitmap.font.Font;
+
 @SuppressWarnings("unchecked")
 public abstract class Bitmap<T> {
 
@@ -27,6 +29,7 @@ public abstract class Bitmap<T> {
 	public final T[] pixels;
 
 	protected T[] transparentColors;
+	protected Font font;
 
 	public Bitmap(Class<T> type, int width, int height) {
 		this.type = type;
@@ -68,6 +71,18 @@ public abstract class Bitmap<T> {
 		this.transparentColors = colors;
 	}
 
+	public T[] getTransparentColors() {
+		return transparentColors;
+	}
+
+	public void setFont(Font font) {
+		this.font = font;
+	}
+
+	public Font getFont() {
+		return font;
+	}
+
 	public void setPixel(int x, int y, T color) {
 		pixels[x + y * width] = color;
 	}
@@ -92,6 +107,10 @@ public abstract class Bitmap<T> {
 				setPixel(x, y, color);
 			}
 		}
+	}
+
+	public void write(String text, T color, int x, int y) {
+		font.write(this, text, color, x, y);
 	}
 
 	public void draw(Bitmap<T> image, int x, int y) {
