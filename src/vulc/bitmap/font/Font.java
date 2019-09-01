@@ -25,8 +25,8 @@ import vulc.bitmap.Bitmap;
 import vulc.bitmap.BoolBitmap;
 
 /**
- * Font class creates a font charset by a LinkFont file.
- * <h2>File-version:</h2>&emsp;&emsp;&emsp;1
+ * Font class creates a font charset by a LinkFont file.<br>
+ * File-version: 1
  * @author Vulcalien
  */
 public class Font {
@@ -117,35 +117,7 @@ public class Font {
 		return getScaled(scale, scale);
 	}
 
-	public void write(String text, int color, Bitmap<Integer> bitmap, int x, int y) {
-		int offset = x;
-		for(int i = 0; i < text.length(); i++) {
-			int code = text.charAt(i) - 32;
-
-			Bitmap<Boolean> img = imgs[code];
-			bitmap.drawBool(img, color, offset, y);
-
-			offset += img.width + letterSpacing;
-		}
-	}
-
-	public void write(String text, Bitmap<Integer> bitmap, int x, int y) {
-		this.write(text, 0x000000, bitmap, x, y);
-	}
-
-	public void writeOnByte(String text, byte color, Bitmap<Byte> bitmap, int x, int y) {
-		int offset = x;
-		for(int i = 0; i < text.length(); i++) {
-			int code = text.charAt(i) - 32;
-
-			Bitmap<Boolean> img = imgs[code];
-			bitmap.drawBool(img, color, offset, y);
-
-			offset += img.width + letterSpacing;
-		}
-	}
-
-	public void writeOnBool(String text, boolean color, Bitmap<Boolean> bitmap, int x, int y) {
+	public <T> void write(Bitmap<T> bitmap, String text, T color, int x, int y) {
 		int offset = x;
 		for(int i = 0; i < text.length(); i++) {
 			int code = text.charAt(i) - 32;
