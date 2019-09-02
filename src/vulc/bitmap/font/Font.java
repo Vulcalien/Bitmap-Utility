@@ -38,6 +38,7 @@ public class Font {
 
 	protected Bitmap<Boolean>[] imgs;
 	protected int letterSpacing;
+	protected int lineSpacing;
 
 	public Font(InputStream in) {
 		init(in);
@@ -68,23 +69,25 @@ public class Font {
 
 			this.imgs = new BoolBitmap[chars];
 			monospaced = true;
+
 			for(int i = 0; i < chars; i++) {
 				int width = in.readByte();
-
-				if(monospaced && i != 0) {
-					monospaced = width == imgs[0].width;
-				}
 
 				Bitmap<Boolean> img = new BoolBitmap(width, height);
 				imgs[i] = img;
 
 				byte[] pixels = new byte[width * height];
 				in.read(pixels);
+
 				for(int p = 0; p < pixels.length; p++) {
 					int color = pixels[p] & 0xff;
 
 					if(color == 0xff) img.pixels[p] = true;
 					else img.pixels[p] = false;
+				}
+
+				if(monospaced) {
+					monospaced = (width == imgs[0].width);
 				}
 			}
 
@@ -94,11 +97,41 @@ public class Font {
 		}
 	}
 
+	public int getNumberOfChars() {
+		return chars;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public boolean isMonospaced() {
+		return monospaced;
+	}
+
+	public void setLetterSpacing(int spacing) {
+		this.letterSpacing = spacing;
+	}
+
+	public int getLetterSpacing() {
+		return letterSpacing;
+	}
+
+	public int getLineSpacing() {
+		return lineSpacing;
+	}
+
+	public void setLineSpacing(int spacing) {
+		this.lineSpacing = spacing;
+	}
+
 	public Font getScaled(int xScale, int yScale) {
 		Font font = new Font();
 		font.chars = chars;
-		font.letterSpacing = letterSpacing * xScale;
 		font.height = height * yScale;
+
+		font.letterSpacing = letterSpacing * xScale;
+		font.lineSpacing = lineSpacing * yScale;
 
 		font.imgs = new BoolBitmap[chars];
 		for(int i = 0; i < chars; i++) {
@@ -113,28 +146,42 @@ public class Font {
 	}
 
 	public <T> void write(Bitmap<T> bitmap, String text, T color, int x, int y) {
-		int offset = x;
+		int xOffset = x;
+		int yOffset = y;
+
 		for(int i = 0; i < text.length(); i++) {
-			int code = text.charAt(i) - 32;
+			char character = text.charAt(i);
 
-			Bitmap<Boolean> img = imgs[code];
-			bitmap.drawBool(img, color, offset, y);
+			if(character == '\n') {
+				xOffset = x;
+				yOffset += height + lineSpacing;
+			} else {
+				Bitmap<Boolean> img = imgs[character - 32];
+				bitmap.drawBool(img, color, xOffset, yOffset);
 
-			offset += img.width + letterSpacing;
+				xOffset += img.width + letterSpacing;
+			}
 		}
 	}
 
 	public <T> void write(Bitmap<T> bitmap, String text, T color, int transparency, int x, int y) {
 		transparency &= 0xff;
 
-		int offset = x;
+		int xOffset = x;
+		int yOffset = y;
+
 		for(int i = 0; i < text.length(); i++) {
-			int code = text.charAt(i) - 32;
+			char character = text.charAt(i);
 
-			Bitmap<Boolean> img = imgs[code];
-			bitmap.drawBool(img, color, transparency, offset, y);
+			if(character == '\n') {
+				xOffset = x;
+				yOffset += height + lineSpacing;
+			} else {
+				Bitmap<Boolean> img = imgs[character - 32];
+				bitmap.drawBool(img, color, transparency, xOffset, yOffset);
 
-			offset += img.width + letterSpacing;
+				xOffset += img.width + letterSpacing;
+			}
 		}
 	}
 
@@ -151,26 +198,6 @@ public class Font {
 
 	public int widthOf(char character) {
 		return imgs[character - 32].width;
-	}
-
-	public void setLetterSpacing(int spacing) {
-		letterSpacing = spacing;
-	}
-
-	public int getLetterSpacing() {
-		return letterSpacing;
-	}
-
-	public int getNumberOfChars() {
-		return chars;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public boolean isMonospaced() {
-		return monospaced;
 	}
 
 }
