@@ -15,6 +15,7 @@
  ******************************************************************************/
 package vulc.bitmap.font;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,25 +58,18 @@ public class Font {
 	protected Font() {
 	}
 
-	protected void init(InputStream in) {
+	protected void init(InputStream inputStream) {
 		try {
-			byte[] info = new byte[9];
-			in.read(info);
+			DataInputStream in = new DataInputStream(inputStream);
 
-			this.chars = (info[0] & 0xff) << 24
-			             | (info[1] & 0xff) << 16
-			             | (info[2] & 0xff) << 8
-			             | (info[3] & 0xff);
-			this.letterSpacing = (info[4] & 0xff) << 24
-			                     | (info[5] & 0xff) << 16
-			                     | (info[6] & 0xff) << 8
-			                     | (info[7] & 0xff);
-			this.height = info[8] & 0xff;
+			this.chars = in.readInt();
+			this.letterSpacing = in.readInt();
+			this.height = in.readByte();
 
 			this.imgs = new BoolBitmap[chars];
 			monospaced = true;
 			for(int i = 0; i < chars; i++) {
-				int width = in.read();
+				int width = in.readByte();
 
 				if(monospaced && i != 0) {
 					monospaced = width == imgs[0].width;
@@ -93,6 +87,7 @@ public class Font {
 					else img.pixels[p] = false;
 				}
 			}
+
 			in.close();
 		} catch(IOException e) {
 			throw new RuntimeException(e);
