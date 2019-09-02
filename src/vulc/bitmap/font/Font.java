@@ -26,8 +26,11 @@ import vulc.bitmap.Bitmap;
 import vulc.bitmap.BoolBitmap;
 
 /**
- * Font class creates a font charset by a LinkFont file.<br>
- * File-version: 1
+ * Font class allows to write characters into a Bitmap.<br>
+ * It uses a charset inside a binary file.<br>
+ * <br>
+ * File-version: 2
+ *
  * @author Vulcalien
  */
 public class Font {
@@ -64,8 +67,10 @@ public class Font {
 			DataInputStream in = new DataInputStream(inputStream);
 
 			this.chars = in.readInt();
-			this.letterSpacing = in.readInt();
 			this.height = in.readByte();
+
+			this.letterSpacing = in.readByte();
+			this.lineSpacing = in.readByte();
 
 			this.imgs = new BoolBitmap[chars];
 			monospaced = true;
