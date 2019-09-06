@@ -29,7 +29,7 @@ import vulc.bitmap.BoolBitmap;
  * Font class allows to write characters into a Bitmap.<br>
  * It uses a charset inside a binary file.<br>
  * <br>
- * File-version: 2
+ * File-version: 3
  *
  * @author Vulcalien
  */
@@ -81,13 +81,20 @@ public class Font {
 				Bitmap<Boolean> img = new BoolBitmap(width, height);
 				imgs[i] = img;
 
-				byte[] pixels = new byte[width * height];
-				in.read(pixels);
+				int nPixels = width * height;
+				int nBytes = nPixels / 8 + (nPixels % 8 != 0 ? 1 : 0);
 
-				for(int p = 0; p < pixels.length; p++) {
-					int color = pixels[p] & 0xff;
+				byte[] dataBuffer = new byte[nBytes];
+				in.read(dataBuffer);
 
-					if(color == 0xff) img.pixels[p] = true;
+				// each byte contains 8 pixels
+				boolean[] pixels = bytesToBits(dataBuffer);
+
+				// nPixels is used because there can be padding bits
+				for(int p = 0; p < nPixels; p++) {
+					boolean pixel = pixels[p];
+
+					if(pixel == true) img.pixels[p] = true;
 					else img.pixels[p] = false;
 				}
 
@@ -203,6 +210,19 @@ public class Font {
 
 	public int widthOf(char character) {
 		return imgs[character - 32].width;
+	}
+
+	protected static boolean[] bytesToBits(byte[] bytes) {
+		boolean[] result = new boolean[bytes.length * 8];
+
+		for(int i = 0; i < bytes.length; i++) {
+			byte b = bytes[i];
+
+			for(int j = 0; j < 8; j++) {
+				result[i * 8 + j] = ((b >> (7 - j)) & 1) != 0;
+			}
+		}
+		return result;
 	}
 
 }
