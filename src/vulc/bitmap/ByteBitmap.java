@@ -17,14 +17,13 @@ package vulc.bitmap;
 
 public class ByteBitmap extends Bitmap<Byte> {
 
-	public ByteBitmap(int width, int height) {
+	public ByteBitmap(int width, int height, Byte color) {
 		super(Byte.class, width, height);
-		clear((byte) 0);
+		clear(color);
 	}
 
-	public ByteBitmap(int width, int height, Byte color) {
-		this(width, height);
-		clear(color);
+	public ByteBitmap(int width, int height) {
+		this(width, height, (byte) 0);
 	}
 
 }

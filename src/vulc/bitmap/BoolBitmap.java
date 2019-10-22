@@ -19,14 +19,13 @@ import java.awt.image.BufferedImage;
 
 public class BoolBitmap extends Bitmap<Boolean> {
 
-	public BoolBitmap(int width, int height) {
+	public BoolBitmap(int width, int height, Boolean color) {
 		super(Boolean.class, width, height);
-		clear(false);
+		clear(color);
 	}
 
-	public BoolBitmap(int width, int height, Boolean color) {
-		this(width, height);
-		clear(color);
+	public BoolBitmap(int width, int height) {
+		this(width, height, false);
 	}
 
 	public BoolBitmap(BufferedImage img, int trueColor) {

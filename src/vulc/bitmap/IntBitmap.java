@@ -19,14 +19,13 @@ import java.awt.image.BufferedImage;
 
 public class IntBitmap extends Bitmap<Integer> {
 
-	public IntBitmap(int width, int height) {
+	public IntBitmap(int width, int height, Integer color) {
 		super(Integer.class, width, height);
-		clear(0);
+		clear(color);
 	}
 
-	public IntBitmap(int width, int height, Integer color) {
-		this(width, height);
-		clear(color);
+	public IntBitmap(int width, int height) {
+		this(width, height, 0);
 	}
 
 	public IntBitmap(BufferedImage img) {
