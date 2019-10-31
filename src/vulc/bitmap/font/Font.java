@@ -129,12 +129,12 @@ public class Font {
 		return letterSpacing;
 	}
 
-	public int getLineSpacing() {
-		return lineSpacing;
-	}
-
 	public void setLineSpacing(int spacing) {
 		this.lineSpacing = spacing;
+	}
+
+	public int getLineSpacing() {
+		return lineSpacing;
 	}
 
 	public Font getScaled(int xScale, int yScale) {

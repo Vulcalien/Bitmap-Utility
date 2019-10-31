@@ -109,6 +109,10 @@ public abstract class Bitmap<T> {
 		}
 	}
 
+	public void fill(int x0, int y0, int x1, int y1, T color, int transparency) {
+		throw new UnsupportedOperationException();
+	}
+
 	public void draw(Bitmap<T> image, int x, int y) {
 		for(int yi = 0; yi < image.height; yi++) {
 			int yPix = yi + y;

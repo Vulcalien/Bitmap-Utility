@@ -45,6 +45,22 @@ public class IntBitmap extends Bitmap<Integer> {
 		}
 	}
 
+	public void fill(int x0, int y0, int x1, int y1, Integer color, int transparency) {
+		transparency &= 0xff;
+
+		for(int y = y0; y <= y1; y++) {
+			if(y < 0 || y >= height) continue;
+
+			for(int x = x0; x <= x1; x++) {
+				if(x < 0 || x >= width) continue;
+
+				int oldColor = getPixel(x, y);
+
+				setPixel(x, y, compositColors(color, oldColor, transparency));
+			}
+		}
+	}
+
 	public void draw(Bitmap<Integer> image, int transparency, int x, int y) {
 		transparency &= 0xff;
 
