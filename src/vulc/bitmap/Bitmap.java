@@ -87,6 +87,10 @@ public abstract class Bitmap<T> {
 		pixels[x + y * width] = color;
 	}
 
+	public void setPixel(int x, int y, T color, int transparency) {
+		throw new UnsupportedOperationException();
+	}
+
 	public T getPixel(int x, int y) {
 		return pixels[x + y * width];
 	}
@@ -97,23 +101,31 @@ public abstract class Bitmap<T> {
 		}
 	}
 
-	public void fill(int x0, int y0, int x1, int y1, T color) {
+	public void fill(int x0, int y0, int x1, int y1, T color, int transparency) {
+		transparency &= 0xff;
+
 		for(int y = y0; y <= y1; y++) {
 			if(y < 0 || y >= height) continue;
 
 			for(int x = x0; x <= x1; x++) {
 				if(x < 0 || x >= width) continue;
 
-				setPixel(x, y, color);
+				if(transparency == 0xff) {
+					setPixel(x, y, color);
+				} else {
+					setPixel(x, y, color, transparency);
+				}
 			}
 		}
 	}
 
-	public void fill(int x0, int y0, int x1, int y1, T color, int transparency) {
-		throw new UnsupportedOperationException();
+	public void fill(int x0, int y0, int x1, int y1, T color) {
+		this.fill(x0, y0, x1, y1, color, 0xff);
 	}
 
-	public void draw(Bitmap<T> image, int x, int y) {
+	public void draw(Bitmap<T> image, int transparency, int x, int y) {
+		transparency &= 0xff;
+
 		for(int yi = 0; yi < image.height; yi++) {
 			int yPix = yi + y;
 			if(yPix < 0 || yPix >= height) continue;
@@ -127,24 +139,31 @@ public abstract class Bitmap<T> {
 				for(int i = 0; i < transparentColors.length; i++) {
 					if(color.equals(transparentColors[i])) continue x_for;
 				}
-				setPixel(xPix, yPix, color);
+
+				if(transparency == 0xff) {
+					setPixel(xPix, yPix, color);
+				} else {
+					setPixel(xPix, yPix, color, transparency);
+				}
 			}
 		}
 	}
 
-	public void draw(Bitmap<T> image, int transparency, int x, int y) {
-		throw new UnsupportedOperationException();
-	}
-
-	public void drawByte(Bitmap<Byte> image, T color, int x, int y) {
-		throw new UnsupportedOperationException();
+	public void draw(Bitmap<T> image, int x, int y) {
+		this.draw(image, 0xff, x, y);
 	}
 
 	public void drawByte(Bitmap<Byte> image, T color, int transparency, int x, int y) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void drawBool(Bitmap<Boolean> image, T color, int x, int y) {
+	public void drawByte(Bitmap<Byte> image, T color, int x, int y) {
+		this.drawByte(image, color, 0xff, x, y);
+	}
+
+	public void drawBool(Bitmap<Boolean> image, T color, int transparency, int x, int y) {
+		transparency &= 0xff;
+
 		for(int yi = 0; yi < image.height; yi++) {
 			int yPix = yi + y;
 			if(yPix < 0 || yPix >= height) continue;
@@ -154,21 +173,27 @@ public abstract class Bitmap<T> {
 				if(xPix < 0 || xPix >= width) continue;
 
 				boolean val = image.getPixel(xi, yi);
-				if(val == true) setPixel(xPix, yPix, color);
+				if(val == true) {
+					if(transparency == 0xff) {
+						setPixel(xPix, yPix, color);
+					} else {
+						setPixel(xPix, yPix, color, transparency);
+					}
+				}
 			}
 		}
 	}
 
-	public void drawBool(Bitmap<Boolean> image, T color, int transparency, int x, int y) {
-		throw new UnsupportedOperationException();
-	}
-
-	public void write(String text, T color, int x, int y) {
-		font.write(this, text, color, x, y);
+	public void drawBool(Bitmap<Boolean> image, T color, int x, int y) {
+		this.drawBool(image, color, 0xff, x, y);
 	}
 
 	public void write(String text, T color, int transparency, int x, int y) {
 		font.write(this, text, color, transparency, x, y);
+	}
+
+	public void write(String text, T color, int x, int y) {
+		font.write(this, text, color, x, y);
 	}
 
 	public Bitmap<T> getCopy() {

@@ -157,28 +157,7 @@ public class Font {
 		return getScaled(scale, scale);
 	}
 
-	public <T> void write(Bitmap<T> bitmap, String text, T color, int x, int y) {
-		int xOffset = x;
-		int yOffset = y;
-
-		for(int i = 0; i < text.length(); i++) {
-			char character = text.charAt(i);
-
-			if(character == '\n') {
-				xOffset = x;
-				yOffset += height + lineSpacing;
-			} else {
-				Bitmap<Boolean> img = imgs[character - 32];
-				bitmap.drawBool(img, color, xOffset, yOffset);
-
-				xOffset += img.width + letterSpacing;
-			}
-		}
-	}
-
 	public <T> void write(Bitmap<T> bitmap, String text, T color, int transparency, int x, int y) {
-		transparency &= 0xff;
-
 		int xOffset = x;
 		int yOffset = y;
 
@@ -195,6 +174,10 @@ public class Font {
 				xOffset += img.width + letterSpacing;
 			}
 		}
+	}
+
+	public <T> void write(Bitmap<T> bitmap, String text, T color, int x, int y) {
+		this.write(bitmap, text, color, 0xff, x, y);
 	}
 
 	public int widthOf(String text) {

@@ -45,70 +45,9 @@ public class IntBitmap extends Bitmap<Integer> {
 		}
 	}
 
-	public void fill(int x0, int y0, int x1, int y1, Integer color, int transparency) {
-		transparency &= 0xff;
-
-		for(int y = y0; y <= y1; y++) {
-			if(y < 0 || y >= height) continue;
-
-			for(int x = x0; x <= x1; x++) {
-				if(x < 0 || x >= width) continue;
-
-				int oldColor = getPixel(x, y);
-
-				setPixel(x, y, compositColors(color, oldColor, transparency));
-			}
-		}
-	}
-
-	public void draw(Bitmap<Integer> image, int transparency, int x, int y) {
-		transparency &= 0xff;
-
-		for(int yi = 0; yi < image.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			x_for:
-			for(int xi = 0; xi < image.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				Integer color = image.getPixel(xi, yi);
-				for(int i = 0; i < transparentColors.length; i++) {
-					if(color.equals(transparentColors[i])) continue x_for;
-				}
-
-				int oldColor = getPixel(xPix, yPix);
-				color = compositColors(color, oldColor, transparency);
-
-				setPixel(xPix, yPix, color);
-			}
-		}
-	}
-
-	public void drawByte(Bitmap<Byte> image, Integer color, int x, int y) {
-		int rCol = (color >> 16) & 0xff;
-		int gCol = (color >> 8) & 0xff;
-		int bCol = (color) & 0xff;
-
-		for(int yi = 0; yi < image.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			for(int xi = 0; xi < image.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				int gradient = Byte.toUnsignedInt(image.getPixel(xi, yi));
-
-				int r = rCol * gradient / 0xff;
-				int g = gCol * gradient / 0xff;
-				int b = bCol * gradient / 0xff;
-
-				int drawColor = r << 16 | g << 8 | b;
-				setPixel(xPix, yPix, drawColor);
-			}
-		}
+	public void setPixel(int x, int y, Integer color, int transparency) {
+		int oldColor = getPixel(x, y);
+		setPixel(x, y, compositColors(color, oldColor, transparency));
 	}
 
 	public void drawByte(Bitmap<Byte> image, Integer color, int transparency, int x, int y) {
@@ -134,31 +73,10 @@ public class IntBitmap extends Bitmap<Integer> {
 
 				int drawColor = r << 16 | g << 8 | b;
 
-				int oldColor = getPixel(xPix, yPix);
-				drawColor = compositColors(drawColor, oldColor, transparency);
-
-				setPixel(xPix, yPix, drawColor);
-			}
-		}
-	}
-
-	public void drawBool(Bitmap<Boolean> image, Integer color, int transparency, int x, int y) {
-		transparency &= 0xff;
-
-		for(int yi = 0; yi < image.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			for(int xi = 0; xi < image.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				boolean val = image.getPixel(xi, yi);
-				if(val == true) {
-					int oldColor = getPixel(xPix, yPix);
-					int drawColor = compositColors(color, oldColor, transparency);
-
+				if(transparency == 0xff) {
 					setPixel(xPix, yPix, drawColor);
+				} else {
+					setPixel(xPix, yPix, drawColor, transparency);
 				}
 			}
 		}
