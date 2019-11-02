@@ -41,7 +41,7 @@ public class IntBitmap extends Bitmap<Integer> {
 			int g = (color >> 8) & 0xff;
 			int b = color & 0xff;
 
-			pixels[i] = r << 16 | g << 8 | b;
+			raster.setPixel(i, r << 16 | g << 8 | b);
 		}
 	}
 

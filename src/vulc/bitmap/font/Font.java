@@ -94,8 +94,7 @@ public class Font {
 				for(int p = 0; p < nPixels; p++) {
 					boolean pixel = pixels[p];
 
-					if(pixel == true) img.pixels[p] = true;
-					else img.pixels[p] = false;
+					img.raster.setPixel(p, pixel);
 				}
 
 				if(monospaced) {

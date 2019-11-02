@@ -18,6 +18,7 @@ package vulc.bitmap;
 import java.lang.reflect.Array;
 
 import vulc.bitmap.font.Font;
+import vulc.bitmap.raster.Raster;
 
 @SuppressWarnings("unchecked")
 public abstract class Bitmap<T> {
@@ -26,7 +27,7 @@ public abstract class Bitmap<T> {
 
 	public final int width;
 	public final int height;
-	public final T[] pixels;
+	public final Raster<T> raster;
 
 	protected T[] transparentColors;
 	protected Font font;
@@ -36,7 +37,8 @@ public abstract class Bitmap<T> {
 
 		this.width = width;
 		this.height = height;
-		this.pixels = (T[]) Array.newInstance(type, width * height);
+		this.raster = Raster.getRaster(width, height, type);
+
 		this.transparentColors = (T[]) Array.newInstance(type, 0);
 	}
 
@@ -64,7 +66,7 @@ public abstract class Bitmap<T> {
 	}
 
 	public int size() {
-		return pixels.length;
+		return width * height;
 	}
 
 	public void setTransparent(T... colors) {
@@ -84,7 +86,7 @@ public abstract class Bitmap<T> {
 	}
 
 	public void setPixel(int x, int y, T color) {
-		pixels[x + y * width] = color;
+		raster.setPixel(x + y * width, color);
 	}
 
 	public void setPixel(int x, int y, T color, int transparency) {
@@ -92,12 +94,13 @@ public abstract class Bitmap<T> {
 	}
 
 	public T getPixel(int x, int y) {
-		return pixels[x + y * width];
+		return raster.getPixel(x + y * width);
 	}
 
 	public void clear(T color) {
-		for(int i = 0; i < size(); i++) {
-			pixels[i] = color;
+		int size = size();
+		for(int i = 0; i < size; i++) {
+			raster.setPixel(i, color);
 		}
 	}
 
@@ -198,8 +201,8 @@ public abstract class Bitmap<T> {
 
 	public Bitmap<T> getCopy() {
 		Bitmap<T> copy = getSameTypeInstance(width, height);
-		for(int i = 0; i < this.size(); i++) {
-			copy.pixels[i] = this.pixels[i];
+		for(int i = 0; i < size(); i++) {
+			copy.raster.setPixel(i, raster.getPixel(i));
 		}
 		return copy;
 	}
@@ -367,8 +370,9 @@ public abstract class Bitmap<T> {
 			Bitmap<T> bitmap = (Bitmap<T>) obj;
 			if(bitmap.width != this.width || bitmap.height != this.height) return false;
 
-			for(int i = 0; i < bitmap.size(); i++) {
-				if(!bitmap.pixels[i].equals(this.pixels[i])) {
+			int size = size();
+			for(int i = 0; i < size; i++) {
+				if(!bitmap.raster.getPixel(i).equals(this.raster.getPixel(i))) {
 					return false;
 				}
 			}
