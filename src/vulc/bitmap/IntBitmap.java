@@ -82,14 +82,14 @@ public class IntBitmap extends Bitmap<Integer> {
 		}
 	}
 
-	protected int compositColors(int c0, int c1, int transparency) {
-		int r0 = (c0 >> 16) & 0xff;
-		int g0 = (c0 >> 8) & 0xff;
-		int b0 = c0 & 0xff;
+	protected int compositColors(int newColor, int oldColor, int transparency) {
+		int r0 = (newColor >> 16) & 0xff;
+		int g0 = (newColor >> 8) & 0xff;
+		int b0 = newColor & 0xff;
 
-		int r1 = (c1 >> 16) & 0xff;
-		int g1 = (c1 >> 8) & 0xff;
-		int b1 = c1 & 0xff;
+		int r1 = (oldColor >> 16) & 0xff;
+		int g1 = (oldColor >> 8) & 0xff;
+		int b1 = oldColor & 0xff;
 
 		int r = (r0 * transparency + r1 * (0xff - transparency)) / 0xff;
 		int g = (g0 * transparency + g1 * (0xff - transparency)) / 0xff;
