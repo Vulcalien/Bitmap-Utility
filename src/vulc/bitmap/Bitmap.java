@@ -37,7 +37,7 @@ public abstract class Bitmap<T> {
 
 		this.width = width;
 		this.height = height;
-		this.raster = Raster.getRaster(width, height, type);
+		this.raster = RasterFactory.getRaster(width, height, type);
 
 		this.transparentColors = (T[]) Array.newInstance(type, 0);
 	}
