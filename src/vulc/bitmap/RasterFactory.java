@@ -17,7 +17,6 @@ abstract class RasterFactory {
 		    return (Raster<T>) new BoolRaster(width, height);
 		else
 		    throw new RuntimeException("Error: unknown raster type: " + type);
-
 	}
 
 }
