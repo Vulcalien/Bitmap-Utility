@@ -333,25 +333,25 @@ public abstract class Bitmap<T> {
 		theta %= Math.PI * 2;
 		if(theta < 0) theta = Math.PI * 2 + theta;
 
-		double cos0 = Math.cos(-theta);
-		double sin0 = Math.sin(-theta);
+		double cos = Math.cos(-theta);
+		double sin = Math.sin(-theta);
 
-		int w = (int) (Math.abs(cos0 * width) + Math.abs(sin0 * height) + 0.5);
-		int h = (int) (Math.abs(cos0 * height) + Math.abs(sin0 * width) + 0.5);
+		int w = (int) Math.round(Math.abs(cos * width) + Math.abs(sin * height));
+		int h = (int) Math.round(Math.abs(cos * height) + Math.abs(sin * width));
 		Bitmap<T> result = getSameTypeInstance(w, h, background);
 
-		double c0x = width / 2.0;
-		double c0y = height / 2.0;
-		double c1x = w / 2.0;
-		double c1y = h / 2.0;
+		double cx0 = width / 2.0;
+		double cy0 = height / 2.0;
+		double cx1 = w / 2.0;
+		double cy1 = h / 2.0;
 
 		for(int y = 0; y < result.height; y++) {
-			double yd = y - c1y;
+			double yd = y - cy1;
 			for(int x = 0; x < result.width; x++) {
-				double xd = x - c1x;
+				double xd = x - cx1;
 
-				int x0 = (int) (xd * cos0 - yd * sin0 + 0.5 + c0x);
-				int y0 = (int) (xd * sin0 + yd * cos0 + 0.5 + c0y);
+				int x0 = (int) Math.round(xd * cos - yd * sin + cx0);
+				int y0 = (int) Math.round(xd * sin + yd * cos + cy0);
 
 				// offset correction
 				if(theta >= Math.PI / 2 && theta <= Math.PI) y0--;
