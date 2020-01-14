@@ -57,7 +57,6 @@ public class IntBitmap extends Bitmap<Integer> {
 				if(xPix < 0 || xPix >= width) continue;
 
 				int alpha = Byte.toUnsignedInt(image.getPixel(xi, yi));
-
 				setPixel(xPix, yPix, color, alpha * transparency / 0xff);
 			}
 		}

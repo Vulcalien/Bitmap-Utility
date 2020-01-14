@@ -36,7 +36,6 @@ public class BoolBitmap extends Bitmap<Boolean> {
 
 		for(int i = 0; i < buffer.length; i++) {
 			int color = buffer[i] & 0xffffff;
-
 			raster.setPixel(i, color == trueColor);
 		}
 	}
@@ -46,7 +45,6 @@ public class BoolBitmap extends Bitmap<Boolean> {
 
 		for(int i = 0; i < bitmap.size(); i++) {
 			int color = bitmap.raster.getPixel(i);
-
 			raster.setPixel(i, color == trueColor);
 		}
 	}
