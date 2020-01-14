@@ -35,13 +35,7 @@ public class BoolBitmap extends Bitmap<Boolean> {
 		img.getRGB(0, 0, width, height, buffer, 0, width);
 
 		for(int i = 0; i < buffer.length; i++) {
-			int color = buffer[i];
-
-			int r = (color >> 16) & 0xff;
-			int g = (color >> 8) & 0xff;
-			int b = color & 0xff;
-
-			color = r << 16 | g << 8 | b;
+			int color = buffer[i] & 0xffffff;
 
 			raster.setPixel(i, color == trueColor);
 		}
