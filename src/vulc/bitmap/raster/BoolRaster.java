@@ -2,7 +2,7 @@ package vulc.bitmap.raster;
 
 public class BoolRaster extends Raster<Boolean> {
 
-	public final boolean[] pixels;
+	private final boolean[] pixels;
 
 	public BoolRaster(int width, int height) {
 		pixels = new boolean[width * height];

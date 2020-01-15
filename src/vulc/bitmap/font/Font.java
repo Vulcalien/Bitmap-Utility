@@ -23,23 +23,26 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import vulc.bitmap.Bitmap;
-import vulc.bitmap.BoolBitmap;
+import vulc.bitmap.font.charset.BoolCharset;
+import vulc.bitmap.font.charset.Charset;
 
 /**
  * Font class allows to write characters into a Bitmap.<br>
  * It uses a charset inside a binary file.<br>
  * <br>
- * File-version: 3
+ * File-version: 4
  *
  * @author Vulcalien
  */
 public class Font {
 
-	protected int chars;
-	protected int height;
-	protected boolean monospaced;
+	protected static final int TYPE_BOOL = 0;
+	protected static final int TYPE_BYTE = 1;
 
-	protected Bitmap<Boolean>[] imgs;
+	protected int fontType;
+	protected int height;
+
+	protected Charset charset;
 	protected int letterSpacing;
 	protected int lineSpacing;
 
@@ -66,41 +69,23 @@ public class Font {
 		try {
 			DataInputStream in = new DataInputStream(inputStream);
 
-			this.chars = in.readInt();
+			// FILE-HEADER
+			this.fontType = in.readByte();
+
+			int chars = in.readInt();
 			this.height = in.readByte();
 
 			this.letterSpacing = in.readByte();
 			this.lineSpacing = in.readByte();
 
-			this.imgs = new BoolBitmap[chars];
-			monospaced = true;
-
-			for(int i = 0; i < chars; i++) {
-				int width = in.readByte();
-
-				Bitmap<Boolean> img = new BoolBitmap(width, height);
-				imgs[i] = img;
-
-				int nPixels = width * height;
-				int nBytes = nPixels / 8 + (nPixels % 8 != 0 ? 1 : 0);
-
-				byte[] dataBuffer = new byte[nBytes];
-				in.read(dataBuffer);
-
-				// each byte contains 8 pixels
-				boolean[] pixels = bytesToBits(dataBuffer);
-
-				// nPixels is used because there can be padding bits
-				for(int p = 0; p < nPixels; p++) {
-					boolean pixel = pixels[p];
-
-					img.raster.setPixel(p, pixel);
-				}
-
-				if(monospaced) {
-					monospaced = (width == imgs[0].width);
-				}
+			// FILE-BODY
+			if(fontType == TYPE_BOOL) {
+				this.charset = new BoolCharset(chars);
+			} else if(fontType == TYPE_BYTE) {
+//				this.charset = new ByteCharset();
 			}
+
+			charset.load(this, in);
 
 			in.close();
 		} catch(IOException e) {
@@ -108,8 +93,12 @@ public class Font {
 		}
 	}
 
+	public int getFontType() {
+		return fontType;
+	}
+
 	public int getNumberOfChars() {
-		return chars;
+		return charset.size();
 	}
 
 	public int getHeight() {
@@ -117,7 +106,7 @@ public class Font {
 	}
 
 	public boolean isMonospaced() {
-		return monospaced;
+		return charset.isMonospaced;
 	}
 
 	public void setLetterSpacing(int spacing) {
@@ -138,17 +127,12 @@ public class Font {
 
 	public Font getScaled(int xScale, int yScale) {
 		Font font = new Font();
-		font.chars = chars;
 		font.height = height * yScale;
 
 		font.letterSpacing = letterSpacing * xScale;
 		font.lineSpacing = lineSpacing * yScale;
 
-		font.imgs = new BoolBitmap[chars];
-		for(int i = 0; i < chars; i++) {
-			Bitmap<Boolean> img = imgs[i];
-			font.imgs[i] = img.getScaled(xScale, yScale);
-		}
+		font.charset = charset.getScaled(xScale, yScale);
 		return font;
 	}
 
@@ -167,10 +151,10 @@ public class Font {
 				xOffset = x;
 				yOffset += height + lineSpacing;
 			} else {
-				Bitmap<Boolean> img = imgs[character - 32];
-				bitmap.drawBool(img, color, transparency, xOffset, yOffset);
+				int charCode = character - 32;
+				charset.draw(bitmap, charCode, color, transparency, xOffset, yOffset);
 
-				xOffset += img.width + letterSpacing;
+				xOffset += charset.widthOf(charCode) + letterSpacing;
 			}
 		}
 	}
@@ -184,27 +168,14 @@ public class Font {
 
 		int width = 0;
 		for(int i = 0; i < text.length(); i++) {
-			int code = text.charAt(i) - 32;
-			width += imgs[code].width + letterSpacing;
+			int charCode = text.charAt(i) - 32;
+			width += charset.widthOf(charCode) + letterSpacing;
 		}
 		return width - letterSpacing;
 	}
 
 	public int widthOf(char character) {
-		return imgs[character - 32].width;
-	}
-
-	protected static boolean[] bytesToBits(byte[] bytes) {
-		boolean[] result = new boolean[bytes.length * 8];
-
-		for(int i = 0; i < bytes.length; i++) {
-			byte b = bytes[i];
-
-			for(int j = 0; j < 8; j++) {
-				result[i * 8 + j] = ((b >> (7 - j)) & 1) != 0;
-			}
-		}
-		return result;
+		return charset.widthOf(character - 32);
 	}
 
 }

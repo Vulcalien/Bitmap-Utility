@@ -2,7 +2,7 @@ package vulc.bitmap.raster;
 
 public class IntRaster extends Raster<Integer> {
 
-	public final int[] pixels;
+	private final int[] pixels;
 
 	public IntRaster(int width, int height) {
 		pixels = new int[width * height];

@@ -1,6 +1,7 @@
 # Copyright 2019 Vulcalien
 
-# Create a font file (v3) using an image.
+# Create a font file (v4) using an image.
+# Font type: boolean
 
 from os import path
 from PIL import Image
@@ -52,6 +53,8 @@ font_height = img.height & 0xff
 
 #---WRITE INTO FILE---#
 out = open(dest_path, 'wb')
+
+out.write(to1byte(0))               # font type - byte (0 is boolean)
 
 out.write(to4bytes(n_chars))        # chars - int
 out.write(to1byte(font_height))     # height - byte
