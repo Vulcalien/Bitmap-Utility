@@ -45,23 +45,6 @@ public class IntBitmap extends Bitmap<Integer> {
 		setPixel(x, y, compositColors(color, oldColor, transparency));
 	}
 
-	public void drawByte(Bitmap<Byte> image, Integer color, int transparency, int x, int y) {
-		transparency &= 0xff;
-
-		for(int yi = 0; yi < image.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
-
-			for(int xi = 0; xi < image.width; xi++) {
-				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
-
-				int alpha = Byte.toUnsignedInt(image.getPixel(xi, yi));
-				setPixel(xPix, yPix, color, alpha * transparency / 0xff);
-			}
-		}
-	}
-
 	protected int compositColors(int newColor, int oldColor, int transparency) {
 		int r0 = (newColor >> 16) & 0xff;
 		int g0 = (newColor >> 8) & 0xff;

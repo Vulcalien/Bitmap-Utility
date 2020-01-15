@@ -157,7 +157,20 @@ public abstract class Bitmap<T> {
 	}
 
 	public void drawByte(Bitmap<Byte> image, T color, int transparency, int x, int y) {
-		throw new UnsupportedOperationException();
+		transparency &= 0xff;
+
+		for(int yi = 0; yi < image.height; yi++) {
+			int yPix = yi + y;
+			if(yPix < 0 || yPix >= height) continue;
+
+			for(int xi = 0; xi < image.width; xi++) {
+				int xPix = xi + x;
+				if(xPix < 0 || xPix >= width) continue;
+
+				int alpha = Byte.toUnsignedInt(image.getPixel(xi, yi));
+				setPixel(xPix, yPix, color, alpha * transparency / 0xff);
+			}
+		}
 	}
 
 	public void drawByte(Bitmap<Byte> image, T color, int x, int y) {
