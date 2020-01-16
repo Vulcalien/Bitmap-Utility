@@ -41,12 +41,16 @@ while True:
     else:
         break
 
+while True:
+    font_type = ask_number('Insert the type of the font (0 for boolean, 1 for byte)\n')
+    if(font_type in (0, 1)):
+        break
+
 
 n_chars = ask_number('Insert number of characters (Default ASCII has 95):\n>')
 
 letter_spacing = ask_number('Insert Letter-Spacing:\n>') & 0xff
 line_spacing = ask_number('Insert Line-Spacing:\n>') & 0xff
-
 
 img = Image.open(src_path).convert('RGB')
 font_height = img.height & 0xff
@@ -54,7 +58,7 @@ font_height = img.height & 0xff
 #---WRITE INTO FILE---#
 out = open(dest_path, 'wb')
 
-out.write(to1byte(0))               # font type - byte (0 is boolean)
+out.write(to1byte(font_type))       # font type - byte
 
 out.write(to4bytes(n_chars))        # chars - int
 out.write(to1byte(font_height))     # height - byte
@@ -62,7 +66,7 @@ out.write(to1byte(font_height))     # height - byte
 out.write(to1byte(letter_spacing))  # letter-spacing - byte
 out.write(to1byte(line_spacing))    # line-spacing - byte
 
-# image data
+# calculate widths
 char_widths = []
 last_red = -1
 
@@ -89,18 +93,21 @@ for i in range(n_chars):
         for x in range(wc):
             pix = img.getpixel((xOffset + x, y))
 
-            if(pix == (0x00, 0x00, 0x00)):
-                byteBuffer = byteBuffer | (1 << (7 - usedBits))
+            if(font_type == 0): # if boolean
+                if(pix == (0x00, 0x00, 0x00)):
+                    byteBuffer = byteBuffer | (1 << (7 - usedBits))
 
-            usedBits += 1
+                usedBits += 1
 
-            if(usedBits == 8):
-                out.write(to1byte(byteBuffer))
+                if(usedBits == 8):
+                    out.write(to1byte(byteBuffer))
 
-                byteBuffer = 0
-                usedBits = 0
+                    byteBuffer = 0
+                    usedBits = 0
+            elif(font_type == 1): # if byte
+                out.write(to1byte(0xff - pix[2]))
 
-    if(usedBits != 0):
+    if(font_type == 0 and usedBits != 0): # if boolean, write the last byte with padding bits
         out.write(to1byte(byteBuffer))
 
     xOffset += wc + 1

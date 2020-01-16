@@ -4,15 +4,15 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 import vulc.bitmap.Bitmap;
-import vulc.bitmap.BoolBitmap;
+import vulc.bitmap.ByteBitmap;
 import vulc.bitmap.font.Font;
 
-public class BoolCharset extends Charset {
+public class ByteCharset extends Charset {
 
-	private final Bitmap<Boolean>[] imgs;
+	private final Bitmap<Byte>[] imgs;
 
-	public BoolCharset(int chars) {
-		this.imgs = new BoolBitmap[chars];
+	public ByteCharset(int chars) {
+		this.imgs = new ByteBitmap[chars];
 	}
 
 	public int size() {
@@ -27,21 +27,12 @@ public class BoolCharset extends Charset {
 		for(int i = 0; i < imgs.length; i++) {
 			int width = in.readByte();
 
-			Bitmap<Boolean> img = new BoolBitmap(width, height);
+			Bitmap<Byte> img = new ByteBitmap(width, height);
 			imgs[i] = img;
 
 			int nPixels = width * height;
-			int nBytes = nPixels / 8 + (nPixels % 8 != 0 ? 1 : 0);
-
-			byte[] dataBuffer = new byte[nBytes];
-			in.read(dataBuffer);
-
-			// each byte contains 8 pixels
-			boolean[] pixels = bytesToBits(dataBuffer);
-
-			// nPixels is used because there can be padding bits
 			for(int p = 0; p < nPixels; p++) {
-				boolean pixel = pixels[p];
+				byte pixel = in.readByte();
 				img.raster.setPixel(p, pixel);
 			}
 
@@ -52,15 +43,15 @@ public class BoolCharset extends Charset {
 	}
 
 	public <T> void draw(Bitmap<T> bitmap, int charCode, T color, int transparency, int x, int y) {
-		bitmap.drawBool(imgs[charCode], color, transparency, x, y);
+		bitmap.drawByte(imgs[charCode], color, transparency, x, y);
 	}
 
 	public Charset getScaled(int xScale, int yScale) {
-		BoolCharset result = new BoolCharset(imgs.length);
+		ByteCharset result = new ByteCharset(imgs.length);
 		result.isMonospaced = this.isMonospaced;
 
 		for(int i = 0; i < imgs.length; i++) {
-			Bitmap<Boolean> img = imgs[i];
+			Bitmap<Byte> img = imgs[i];
 			result.imgs[i] = img.getScaled(xScale, yScale);
 		}
 		return result;
@@ -68,19 +59,6 @@ public class BoolCharset extends Charset {
 
 	public int widthOf(int charCode) {
 		return imgs[charCode].width;
-	}
-
-	private static boolean[] bytesToBits(byte[] bytes) {
-		boolean[] result = new boolean[bytes.length * 8];
-
-		for(int i = 0; i < bytes.length; i++) {
-			byte b = bytes[i];
-
-			for(int j = 0; j < 8; j++) {
-				result[i * 8 + j] = ((b >> (7 - j)) & 1) != 0;
-			}
-		}
-		return result;
 	}
 
 }

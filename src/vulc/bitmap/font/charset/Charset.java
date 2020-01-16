@@ -12,7 +12,7 @@ public abstract class Charset {
 
 	public abstract int size();
 
-	public abstract void load(Font font, DataInputStream input) throws IOException;
+	public abstract void load(Font font, DataInputStream in) throws IOException;
 
 	public abstract <T> void draw(Bitmap<T> bitmap, int charCode, T color, int transparency, int x, int y);
 

@@ -24,6 +24,7 @@ import java.io.InputStream;
 
 import vulc.bitmap.Bitmap;
 import vulc.bitmap.font.charset.BoolCharset;
+import vulc.bitmap.font.charset.ByteCharset;
 import vulc.bitmap.font.charset.Charset;
 
 /**
@@ -82,7 +83,7 @@ public class Font {
 			if(fontType == TYPE_BOOL) {
 				this.charset = new BoolCharset(chars);
 			} else if(fontType == TYPE_BYTE) {
-//				this.charset = new ByteCharset();
+				this.charset = new ByteCharset(chars);
 			}
 
 			charset.load(this, in);
@@ -127,6 +128,7 @@ public class Font {
 
 	public Font getScaled(int xScale, int yScale) {
 		Font font = new Font();
+		font.fontType = fontType;
 		font.height = height * yScale;
 
 		font.letterSpacing = letterSpacing * xScale;
