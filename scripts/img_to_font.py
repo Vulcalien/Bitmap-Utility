@@ -47,24 +47,11 @@ while True:
         break
 
 
-n_chars = ask_number('Insert number of characters (Default ASCII has 95):\n>')
-
 letter_spacing = ask_number('Insert Letter-Spacing:\n>') & 0xff
 line_spacing = ask_number('Insert Line-Spacing:\n>') & 0xff
 
 img = Image.open(src_path).convert('RGB')
 font_height = img.height & 0xff
-
-#---WRITE INTO FILE---#
-out = open(dest_path, 'wb')
-
-out.write(to1byte(font_type))       # font type - byte
-
-out.write(to4bytes(n_chars))        # chars - int
-out.write(to1byte(font_height))     # height - byte
-
-out.write(to1byte(letter_spacing))  # letter-spacing - byte
-out.write(to1byte(line_spacing))    # line-spacing - byte
 
 # calculate widths
 char_widths = []
@@ -77,7 +64,19 @@ for i in range(img.width):
         last_red = i
 
 char_widths.append(i - last_red)
+n_chars = len(char_widths)
 del last_red
+
+#---WRITE INTO FILE---#
+out = open(dest_path, 'wb')
+
+out.write(to1byte(font_type))       # font type - byte
+
+out.write(to4bytes(n_chars))        # chars - int
+out.write(to1byte(font_height))     # height - byte
+
+out.write(to1byte(letter_spacing))  # letter-spacing - byte
+out.write(to1byte(line_spacing))    # line-spacing - byte
 
 xOffset = 0
 for i in range(n_chars):
