@@ -1,7 +1,8 @@
-# Copyright 2019 Vulcalien
+# Copyright 2019 - 2020 Vulcalien
 
 # Create a font file (v4) using an image.
-# Font type: boolean
+# boolean version: 1
+# byte version: 1
 
 from os import path
 from PIL import Image
@@ -80,16 +81,16 @@ out.write(to1byte(line_spacing))    # line-spacing - byte
 
 xOffset = 0
 for i in range(n_chars):
-    wc = char_widths[i]
+    cw = char_widths[i]
 
-    out.write(to1byte(wc))
+    out.write(to1byte(cw))
 
     # write image pixels
     byteBuffer = 0
     usedBits = 0
 
     for y in range(font_height):
-        for x in range(wc):
+        for x in range(cw):
             pix = img.getpixel((xOffset + x, y))
 
             if(font_type == 0): # if boolean
@@ -109,4 +110,4 @@ for i in range(n_chars):
     if(font_type == 0 and usedBits != 0): # if boolean, write the last byte with padding bits
         out.write(to1byte(byteBuffer))
 
-    xOffset += wc + 1
+    xOffset += cw + 1
