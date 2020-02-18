@@ -8,7 +8,7 @@ import vulc.bitmap.Bitmap;
  */
 public abstract class Geometry {
 
-	public static void drawLine(Bitmap<Integer> bitmap, int color, int x0, int y0, int x1, int y1) {
+	public static <T> void drawLine(Bitmap<T> bitmap, T color, int x0, int y0, int x1, int y1) {
 		int xd = x1 - x0;
 		int yd = y1 - y0;
 		double d = Math.sqrt(xd * xd + yd * yd);
@@ -25,23 +25,32 @@ public abstract class Geometry {
 		}
 	}
 
-	public static void drawCircle(Bitmap<Integer> bitmap, int color, int x0, int y0, int radius) {
-		int d = 2 * radius;
-		for(int y = 0; y <= d; y++) {
-			int yPix = y0 + y;
+	protected static <T> void drawCircle(Bitmap<T> bitmap, T color, int xc, int yc, int radius, boolean fill) {
+		for(int y = -radius; y <= radius; y++) {
+			int yPix = yc + y;
 			if(yPix < 0 || yPix >= bitmap.height) continue;
-			int yDist = y - radius;
 
-			for(int x = 0; x <= d; x++) {
-				int xPix = x0 + x;
+			for(int x = -radius; x <= radius; x++) {
+				int xPix = xc + x;
 				if(xPix < 0 || xPix >= bitmap.width) continue;
-				int xDist = x - radius;
 
-				if((int) Math.sqrt(xDist * xDist + yDist * yDist) != radius) continue;
-
+				int distance = (int) Math.round(Math.sqrt(x * x + y * y));
+				if(fill) {
+					if(distance > radius) continue;
+				} else {
+					if(distance != radius) continue;
+				}
 				bitmap.setPixel(xPix, yPix, color);
 			}
 		}
+	}
+
+	public static <T> void drawCircle(Bitmap<T> bitmap, T color, int xc, int yc, int radius) {
+		drawCircle(bitmap, color, xc, yc, radius, false);
+	}
+
+	public static <T> void fillCircle(Bitmap<T> bitmap, T color, int xc, int yc, int radius) {
+		drawCircle(bitmap, color, xc, yc, radius, true);
 	}
 
 }
