@@ -58,6 +58,11 @@ public abstract class Geometry {
 				checkSetPixel(bitmap, xc + x, yc - y, color);
 			}
 		}
+
+		if(fill) {
+			bitmap.fill(xc - radius + w + 1, yc - h + 2,
+			            xc + radius - w - 1, yc + h - 2, color);
+		}
 	}
 
 	public static <T> void drawCircle(Bitmap<T> bitmap, T color, int xc, int yc, int radius) {
