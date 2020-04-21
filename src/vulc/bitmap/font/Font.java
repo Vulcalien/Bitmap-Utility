@@ -151,18 +151,40 @@ public class Font {
 	}
 
 	public int widthOf(String text) {
-		if(text.length() == 0) return 0;
-
-		int width = 0;
+		int longestWidth = 0;
+		int currentWidth = 0;
 		for(int i = 0; i < text.length(); i++) {
-			int charCode = text.charAt(i) - 32;
-			width += charset.widthOf(charCode) + letterSpacing;
+			char character = text.charAt(i);
+
+			if(character == '\n') {
+				if(currentWidth != 0) currentWidth -= letterSpacing;
+				if(currentWidth > longestWidth) longestWidth = currentWidth;
+				currentWidth = 0;
+			} else {
+				int charCode = character - 32;
+				currentWidth += charset.widthOf(charCode) + letterSpacing;
+			}
 		}
-		return width - letterSpacing;
+		if(currentWidth != 0) currentWidth -= letterSpacing;
+		if(currentWidth > longestWidth) longestWidth = currentWidth;
+
+		return longestWidth;
 	}
 
 	public int widthOf(char character) {
 		return charset.widthOf(character - 32);
+	}
+
+	public int heightOf(String text) {
+		int height = getHeight();
+		for(int i = 0; i < text.length(); i++) {
+			char character = text.charAt(i);
+
+			if(character == '\n') {
+				height += lineSpacing + getHeight();
+			}
+		}
+		return height;
 	}
 
 }
