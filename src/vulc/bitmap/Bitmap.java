@@ -42,11 +42,6 @@ public abstract class Bitmap<T> {
 		this.transparentColors = (T[]) Array.newInstance(type, 0);
 	}
 
-	public Bitmap(Class<T> type, int width, int height, T color) {
-		this(type, width, height);
-		clear(color);
-	}
-
 	protected Bitmap<T> getSameTypeInstance(int width, int height) {
 		try {
 			return getClass().getConstructor(Integer.TYPE, Integer.TYPE).newInstance(width, height);
