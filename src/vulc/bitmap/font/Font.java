@@ -1,5 +1,6 @@
 package vulc.bitmap.font;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +39,7 @@ public class Font {
 
 	public Font(File file) {
 		try {
-			init(new FileInputStream(file));
+			init(new BufferedInputStream(new FileInputStream(file)));
 		} catch(FileNotFoundException e) {
 			e.printStackTrace();
 		}
