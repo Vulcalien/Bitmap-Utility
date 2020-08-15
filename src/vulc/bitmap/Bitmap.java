@@ -239,7 +239,8 @@ public abstract class Bitmap<T> {
 		return getScaled(scale, scale);
 	}
 
-	public Bitmap<T> dGetScaledByDimension(int width, int height) {
+	// /!\ floating point /!\
+	public Bitmap<T> fGetScaledByDimension(int width, int height) {
 		Bitmap<T> result = getSameTypeInstance(width, height);
 
 		double xScale = (double) width / this.width;
@@ -257,12 +258,14 @@ public abstract class Bitmap<T> {
 		return result;
 	}
 
-	public Bitmap<T> dGetScaled(double xScale, double yScale) {
-		return dGetScaledByDimension((int) (width * xScale), (int) (height * yScale));
+	// /!\ floating point /!\
+	public Bitmap<T> fGetScaled(double xScale, double yScale) {
+		return fGetScaledByDimension((int) (width * xScale), (int) (height * yScale));
 	}
 
-	public Bitmap<T> dGetScaled(double scale) {
-		return dGetScaled(scale, scale);
+	// /!\ floating point /!\
+	public Bitmap<T> fGetScaled(double scale) {
+		return fGetScaled(scale, scale);
 	}
 
 	public Bitmap<T> getSubimage(int x, int y, int width, int height) {
@@ -337,7 +340,8 @@ public abstract class Bitmap<T> {
 		return result;
 	}
 
-	public Bitmap<T> dGetRotated(double theta, T background) {
+	// /!\ floating point /!\
+	public Bitmap<T> fGetRotated(double theta, T background) {
 		theta %= Math.PI * 2;
 		if(theta < 0) theta = Math.PI * 2 + theta;
 
