@@ -222,12 +222,9 @@ public abstract class Bitmap<T> {
 			for(int x = 0; x < width; x++) {
 				T color = getPixel(x, y);
 
-				int xPix = x * xScale;
-				int yPix = y * yScale;
-
 				for(int yi = 0; yi < yScale; yi++) {
 					for(int xi = 0; xi < xScale; xi++) {
-						result.setPixel(xPix + xi, yPix + yi, color);
+						result.setPixel(x * xScale + xi, y * yScale + yi, color);
 					}
 				}
 			}
