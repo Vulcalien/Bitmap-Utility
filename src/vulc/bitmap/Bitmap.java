@@ -124,14 +124,18 @@ public abstract class Bitmap<T> {
 	public void draw(Bitmap<T> image, int transparency, int x, int y) {
 		transparency &= 0xff;
 
-		for(int yi = 0; yi < image.height; yi++) {
+		int xStart = Math.max(-x, 0);
+		int yStart = Math.max(-y, 0);
+
+		int xEnd = Math.min(width - x, image.width);
+		int yEnd = Math.min(height - y, image.height);
+
+		for(int yi = yStart; yi < yEnd; yi++) {
 			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
 
 			x_for:
-			for(int xi = 0; xi < image.width; xi++) {
+			for(int xi = xStart; xi < xEnd; xi++) {
 				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
 
 				T color = image.getPixel(xi, yi);
 				for(int i = 0; i < transparentColors.length; i++) {
