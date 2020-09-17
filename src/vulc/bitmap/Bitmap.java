@@ -102,12 +102,14 @@ public abstract class Bitmap<T> {
 	public void fill(int x0, int y0, int x1, int y1, T color, int transparency) {
 		transparency &= 0xff;
 
+		x0 = Math.max(x0, 0);
+		y0 = Math.max(y0, 0);
+
+		x1 = Math.min(x1, width - 1);
+		y1 = Math.min(y1, height - 1);
+
 		for(int y = y0; y <= y1; y++) {
-			if(y < 0 || y >= height) continue;
-
 			for(int x = x0; x <= x1; x++) {
-				if(x < 0 || x >= width) continue;
-
 				if(transparency == 0xff) {
 					setPixel(x, y, color);
 				} else {
@@ -124,11 +126,11 @@ public abstract class Bitmap<T> {
 	public void draw(Bitmap<T> image, int transparency, int x, int y) {
 		transparency &= 0xff;
 
-		int xStart = Math.max(-x, 0);
-		int yStart = Math.max(-y, 0);
+		int xStart = Math.max(0, -x);
+		int yStart = Math.max(0, -y);
 
-		int xEnd = Math.min(width - x, image.width);
-		int yEnd = Math.min(height - y, image.height);
+		int xEnd = Math.min(image.width, width - x);
+		int yEnd = Math.min(image.height, height - y);
 
 		for(int yi = yStart; yi < yEnd; yi++) {
 			int yPix = yi + y;
@@ -158,13 +160,17 @@ public abstract class Bitmap<T> {
 	public void drawByte(Bitmap<Byte> image, T color, int transparency, int x, int y) {
 		transparency &= 0xff;
 
-		for(int yi = 0; yi < image.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
+		int xStart = Math.max(0, -x);
+		int yStart = Math.max(0, -y);
 
-			for(int xi = 0; xi < image.width; xi++) {
+		int xEnd = Math.min(image.width, width - x);
+		int yEnd = Math.min(image.height, height - y);
+
+		for(int yi = yStart; yi < yEnd; yi++) {
+			int yPix = yi + y;
+
+			for(int xi = xStart; xi < xEnd; xi++) {
 				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
 
 				int alpha = Byte.toUnsignedInt(image.getPixel(xi, yi));
 				setPixel(xPix, yPix, color, alpha * transparency / 0xff);
@@ -179,13 +185,17 @@ public abstract class Bitmap<T> {
 	public void drawBool(Bitmap<Boolean> image, T color, int transparency, int x, int y) {
 		transparency &= 0xff;
 
-		for(int yi = 0; yi < image.height; yi++) {
-			int yPix = yi + y;
-			if(yPix < 0 || yPix >= height) continue;
+		int xStart = Math.max(0, -x);
+		int yStart = Math.max(0, -y);
 
-			for(int xi = 0; xi < image.width; xi++) {
+		int xEnd = Math.min(image.width, width - x);
+		int yEnd = Math.min(image.height, height - y);
+
+		for(int yi = yStart; yi < yEnd; yi++) {
+			int yPix = yi + y;
+
+			for(int xi = xStart; xi < xEnd; xi++) {
 				int xPix = xi + x;
-				if(xPix < 0 || xPix >= width) continue;
 
 				boolean val = image.getPixel(xi, yi);
 				if(val == true) {
