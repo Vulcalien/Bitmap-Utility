@@ -223,7 +223,9 @@ public abstract class Bitmap<T> {
 
 	public Bitmap<T> getCopy() {
 		Bitmap<T> copy = getSameTypeInstance(width, height);
-		for(int i = 0; i < size(); i++) {
+
+		int size = size();
+		for(int i = 0; i < size; i++) {
 			copy.raster.setPixel(i, raster.getPixel(i));
 		}
 		return copy;
@@ -299,14 +301,10 @@ public abstract class Bitmap<T> {
 		Bitmap<T> result = getSameTypeInstance(width, height);
 
 		for(int y = 0; y < height; y++) {
-			int yPix;
-			if(vertical) yPix = height - y - 1;
-			else yPix = y;
+			int yPix = vertical ? height - y - 1 : y;
 
 			for(int x = 0; x < width; x++) {
-				int xPix;
-				if(horizontal) xPix = width - x - 1;
-				else xPix = x;
+				int xPix = horizontal ? width - x - 1 : x;
 
 				T color = getPixel(x, y);
 				result.setPixel(xPix, yPix, color);
@@ -328,7 +326,6 @@ public abstract class Bitmap<T> {
 
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-
 				int x1 = 0, y1 = 0;
 				if(rot == 0) {
 					x1 = x;
