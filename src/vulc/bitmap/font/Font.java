@@ -53,9 +53,7 @@ public class Font {
 	}
 
 	protected void init(InputStream inputStream) {
-		try {
-			DataInputStream in = new DataInputStream(inputStream);
-
+		try(DataInputStream in = new DataInputStream(inputStream)) {
 			// FILE-HEADER
 			this.fontType = in.readByte();
 
@@ -71,12 +69,9 @@ public class Font {
 			} else if(fontType == TYPE_BYTE) {
 				this.charset = new ByteCharset(chars);
 			}
-
 			charset.load(this, in);
-
-			in.close();
 		} catch(IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 
