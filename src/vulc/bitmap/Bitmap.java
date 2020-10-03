@@ -64,20 +64,24 @@ public abstract class Bitmap<T> {
 		return width * height;
 	}
 
+	public T[] getTransparentColors() {
+		return transparentColors;
+	}
+
 	public void setTransparent(T... colors) {
 		this.transparentColors = colors;
 	}
 
-	public T[] getTransparentColors() {
-		return transparentColors;
+	public Font getFont() {
+		return font;
 	}
 
 	public void setFont(Font font) {
 		this.font = font;
 	}
 
-	public Font getFont() {
-		return font;
+	public T getPixel(int x, int y) {
+		return raster.getPixel(x + y * width);
 	}
 
 	public void setPixel(int x, int y, T color) {
@@ -86,10 +90,6 @@ public abstract class Bitmap<T> {
 
 	public void setPixel(int x, int y, T color, int transparency) {
 		throw new UnsupportedOperationException();
-	}
-
-	public T getPixel(int x, int y) {
-		return raster.getPixel(x + y * width);
 	}
 
 	public void clear(T color) {
