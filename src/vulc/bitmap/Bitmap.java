@@ -314,11 +314,10 @@ public abstract class Bitmap<T> {
 	}
 
 	public Bitmap<T> getRotated(int rot) {
-		rot %= 4;
-		if(rot < 0) rot = 4 + rot;
+		rot &= 3;
 
 		Bitmap<T> result;
-		if(rot % 2 == 0) {
+		if((rot & 1) == 0) {
 			result = getSameTypeInstance(width, height);
 		} else {
 			result = getSameTypeInstance(height, width);
