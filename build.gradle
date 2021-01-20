@@ -1,0 +1,20 @@
+apply plugin: 'java'
+
+defaultTasks 'jar'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+version = '1.0.0'
+
+sourceSets {
+    main.java.srcDirs 'src'
+}
+
+task source(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+
+    from 'LICENSE'
+    from 'NOTICE'
+}
