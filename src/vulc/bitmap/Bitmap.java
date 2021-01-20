@@ -32,12 +32,12 @@ public abstract class Bitmap<T> {
 	protected T[] transparentColors;
 	protected Font font;
 
-	public Bitmap(Class<T> type, int width, int height) {
+	public Bitmap(Class<T> type, Raster<T> raster) {
 		this.type = type;
 
-		this.width = width;
-		this.height = height;
-		this.raster = RasterFactory.getRaster(width, height, type);
+		this.raster = raster;
+		this.width = raster.width;
+		this.height = raster.height;
 
 		this.transparentColors = (T[]) Array.newInstance(type, 0);
 	}

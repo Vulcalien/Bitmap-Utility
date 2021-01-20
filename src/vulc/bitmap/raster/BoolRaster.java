@@ -4,8 +4,13 @@ public class BoolRaster extends Raster<Boolean> {
 
 	private final boolean[] pixels;
 
+	public BoolRaster(int width, int height, boolean[] pixels) {
+		super(width, height);
+		this.pixels = pixels;
+	}
+
 	public BoolRaster(int width, int height) {
-		pixels = new boolean[width * height];
+		this(width, height, new boolean[width * height]);
 	}
 
 	public void setPixel(int i, Boolean color) {

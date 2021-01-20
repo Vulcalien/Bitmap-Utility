@@ -4,8 +4,13 @@ public class ByteRaster extends Raster<Byte> {
 
 	private final byte[] pixels;
 
+	public ByteRaster(int width, int height, byte[] pixels) {
+		super(width, height);
+		this.pixels = pixels;
+	}
+
 	public ByteRaster(int width, int height) {
-		pixels = new byte[width * height];
+		this(width, height, new byte[width * height]);
 	}
 
 	public void setPixel(int i, Byte color) {

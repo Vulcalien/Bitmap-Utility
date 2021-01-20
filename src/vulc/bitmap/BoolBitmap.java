@@ -2,10 +2,12 @@ package vulc.bitmap;
 
 import java.awt.image.BufferedImage;
 
+import vulc.bitmap.raster.BoolRaster;
+
 public class BoolBitmap extends Bitmap<Boolean> {
 
 	public BoolBitmap(int width, int height) {
-		super(Boolean.class, width, height);
+		super(Boolean.class, new BoolRaster(width, height));
 	}
 
 	public BoolBitmap(int width, int height, Boolean color) {

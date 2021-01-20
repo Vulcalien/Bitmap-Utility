@@ -2,10 +2,12 @@ package vulc.bitmap;
 
 import java.awt.image.BufferedImage;
 
+import vulc.bitmap.raster.IntRaster;
+
 public class IntBitmap extends Bitmap<Integer> {
 
 	public IntBitmap(int width, int height) {
-		super(Integer.class, width, height);
+		super(Integer.class, new IntRaster(width, height));
 	}
 
 	public IntBitmap(int width, int height, Integer color) {
