@@ -10,6 +10,10 @@ public class BoolBitmap extends Bitmap<Boolean> {
 		super(Boolean.class, new BoolRaster(width, height));
 	}
 
+	public BoolBitmap(int width, int height, boolean[] raster) {
+		super(Boolean.class, new BoolRaster(width, height, raster));
+	}
+
 	public BoolBitmap(int width, int height, Boolean color) {
 		this(width, height);
 		clear(color);

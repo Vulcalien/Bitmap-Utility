@@ -7,6 +7,8 @@ public class BoolRaster extends Raster<Boolean> {
 	public BoolRaster(int width, int height, boolean[] pixels) {
 		super(width, height);
 		this.pixels = pixels;
+
+		if(width * height != pixels.length) throw new IllegalArgumentException("Raster size != width * height");
 	}
 
 	public BoolRaster(int width, int height) {

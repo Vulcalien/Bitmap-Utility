@@ -7,6 +7,8 @@ public class ByteRaster extends Raster<Byte> {
 	public ByteRaster(int width, int height, byte[] pixels) {
 		super(width, height);
 		this.pixels = pixels;
+
+		if(width * height != pixels.length) throw new IllegalArgumentException("Raster size != width * height");
 	}
 
 	public ByteRaster(int width, int height) {

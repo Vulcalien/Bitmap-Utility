@@ -8,6 +8,10 @@ public class ByteBitmap extends Bitmap<Byte> {
 		super(Byte.class, new ByteRaster(width, height));
 	}
 
+	public ByteBitmap(int width, int height, byte[] raster) {
+		super(Byte.class, new ByteRaster(width, height, raster));
+	}
+
 	public ByteBitmap(int width, int height, Byte color) {
 		this(width, height);
 		clear(color);

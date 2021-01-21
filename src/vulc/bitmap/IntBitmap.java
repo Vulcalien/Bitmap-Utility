@@ -10,6 +10,10 @@ public class IntBitmap extends Bitmap<Integer> {
 		super(Integer.class, new IntRaster(width, height));
 	}
 
+	public IntBitmap(int width, int height, int[] raster) {
+		super(Integer.class, new IntRaster(width, height, raster));
+	}
+
 	public IntBitmap(int width, int height, Integer color) {
 		this(width, height);
 		clear(color);

@@ -7,6 +7,8 @@ public class IntRaster extends Raster<Integer> {
 	public IntRaster(int width, int height, int[] pixels) {
 		super(width, height);
 		this.pixels = pixels;
+
+		if(width * height != pixels.length) throw new IllegalArgumentException("Raster size != width * height");
 	}
 
 	public IntRaster(int width, int height) {
