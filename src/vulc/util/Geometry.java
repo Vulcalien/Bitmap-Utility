@@ -6,7 +6,10 @@ import vulc.bitmap.Bitmap;
  * Geometry allows to draw some geometry shapes in a Bitmap.
  * @author Vulcalien
  */
-public abstract class Geometry {
+public final class Geometry {
+
+	private Geometry() {
+	}
 
 	private static <T> void checkSetPixel(Bitmap<T> bitmap, int x, int y, T color) {
 		if(x < 0 || y < 0 || x >= bitmap.width || y >= bitmap.height) return;
@@ -30,7 +33,7 @@ public abstract class Geometry {
 		}
 	}
 
-	protected static <T> void drawCircle(Bitmap<T> bitmap, T color, int xc, int yc, int radius, boolean fill) {
+	private static <T> void drawCircle(Bitmap<T> bitmap, T color, int xc, int yc, int radius, boolean fill) {
 		double sin_cos_45 = Math.sqrt(2) / 2;
 
 		// w = (1 - cos(45)) * r
